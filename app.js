@@ -133,8 +133,6 @@ async function loadNextVisit() {
 // ============================================================
 function renderCalendarIframe() {
   const iframe = document.getElementById('google-calendar-iframe');
-  const link   = document.getElementById('add-event-link');
-
   if (GOOGLE_CALENDAR_ID.startsWith('VOTRE')) {
     iframe.parentElement.innerHTML =
       '<p style="padding:24px;color:#6b8599;text-align:center;font-weight:600;">Calendrier non configuré — remplir GOOGLE_CALENDAR_ID dans app.js</p>';
@@ -145,8 +143,6 @@ function renderCalendarIframe() {
   iframe.src = `https://calendar.google.com/calendar/embed?src=${encId}`
     + `&hl=fr&ctz=Europe%2FParis&showTitle=0&showNav=1&showDate=1`
     + `&showPrint=0&showTabs=1&showCalendars=0&showTz=0&mode=MONTH`;
-
-  link.href = `https://calendar.google.com/calendar/r/eventedit?add=${GOOGLE_CALENDAR_ID}`;
 }
 
 // ============================================================
