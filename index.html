@@ -19,7 +19,6 @@
         <h1 class="site-title">La Civelle</h1>
         <p class="site-subtitle">Notre mobil-home à Capbreton</p>
       </div>
-      <button class="btn-settings" onclick="openTokenModal()" title="Configuration" aria-label="Configuration">⚙️</button>
     </div>
     <div class="wave-divider">
       <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,8 +83,16 @@
     <div class="modal-content">
       <h3 id="modal-title">🏖️ Nouveau séjour</h3>
       <div class="modal-field">
-        <label for="ev-title">Nom / Famille</label>
-        <input id="ev-title" type="text" placeholder="ex : Christian" autocomplete="off">
+        <label>Qui ?</label>
+        <div id="person-picker" class="person-picker"></div>
+        <!-- Formulaire "Autre personne" -->
+        <div id="other-form" class="other-form hidden">
+          <input id="other-name" type="text" placeholder="Prénom ou nom" autocomplete="off" class="other-name-input">
+          <div class="modal-field modal-colors" style="margin-top:10px;margin-bottom:0">
+            <label>Couleur</label>
+            <div class="color-picker" id="other-color-picker"></div>
+          </div>
+        </div>
       </div>
       <div class="modal-field modal-dates">
         <div>
@@ -96,10 +103,6 @@
           <label for="ev-end">Au</label>
           <input id="ev-end" type="date">
         </div>
-      </div>
-      <div class="modal-field modal-colors">
-        <label>Couleur</label>
-        <div class="color-picker" id="color-picker"></div>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-save" onclick="saveEvent()">Enregistrer</button>
@@ -121,23 +124,6 @@
     </div>
   </div>
   <div id="detail-overlay" class="modal-overlay hidden" onclick="closeDetailModal()"></div>
-
-  <!-- MODALE TOKEN -->
-  <div id="token-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="token-modal-title">
-    <div class="modal-content">
-      <h3 id="token-modal-title">⚙️ Configuration</h3>
-      <p class="token-desc">Saisir le Personal Access Token GitHub pour pouvoir ajouter et supprimer des séjours. Il sera sauvegardé sur cet appareil uniquement.</p>
-      <div class="modal-field">
-        <label for="token-input">GitHub Token</label>
-        <input id="token-input" type="password" placeholder="github_pat_..." autocomplete="off">
-      </div>
-      <div class="modal-actions">
-        <button class="btn-modal-save" onclick="saveToken()">Enregistrer</button>
-        <button class="btn-modal-cancel" onclick="closeTokenModal()">Annuler</button>
-      </div>
-    </div>
-  </div>
-  <div id="token-overlay" class="modal-overlay hidden" onclick="closeTokenModal()"></div>
 
   <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">

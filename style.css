@@ -390,6 +390,48 @@ img { max-width: 100%; display: block; }
   line-height: 1.5;
 }
 
+/* Person picker */
+.person-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.person-btn {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--person-color, var(--sand-dark));
+  background: var(--white);
+  color: var(--person-color, var(--text));
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+.person-btn:hover    { background: var(--person-color, var(--sand)); color: var(--white); transform: scale(1.05); }
+.person-btn.selected { background: var(--person-color, var(--ocean)); color: var(--white); }
+.person-btn-other {
+  --person-color: #636e72;
+  border-style: dashed;
+}
+
+/* Formulaire "Autre" */
+.other-form { margin-top: 12px; }
+.other-form.hidden { display: none; }
+.other-name-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--sand-dark);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+.other-name-input:focus { outline: none; border-color: var(--ocean); }
+
 /* ============================================================
    CHECK-OUT — BARRE DE PROGRESSION
    ============================================================ */

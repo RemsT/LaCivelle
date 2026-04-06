@@ -7,21 +7,35 @@
 //  (Settings → Developer settings → Personal access tokens → Fine-grained)
 //  Permissions requises : Contents → Read and write
 //
-// Token stocké dans localStorage — saisi une fois via la modale de configuration
-function getToken() { return localStorage.getItem('civelle_gh_token') || ''; }
+// Token GitHub — à remplacer une seule fois ici, tous les appareils l'utilisent automatiquement
+// Créer un Fine-grained token sur github.com/settings/tokens avec :
+//   Repository: LaCivelle — Permission: Contents → Read and write
+const GITHUB_TOKEN = 'REMPLACER_PAR_TON_TOKEN';
 const GITHUB_REPO  = 'RemsT/LaCivelle';
 const EVENTS_FILE  = 'events.json';
+function getToken() { return GITHUB_TOKEN; }
 
-// Couleurs disponibles pour les séjours
-const COLORS = [
-  { name: 'Océan',    value: '#1a6b8a' },
-  { name: 'Corail',   value: '#e74c3c' },
-  { name: 'Sable',    value: '#e67e22' },
-  { name: 'Palmier',  value: '#27ae60' },
-  { name: 'Lavande',  value: '#8e44ad' },
-  { name: 'Rose',     value: '#e91e8c' },
-  { name: 'Ardoise',  value: '#2c3e50' },
-  { name: 'Turquoise',value: '#16a085' },
+// Personnes avec leur couleur attitrée
+const PEOPLE = [
+  { name: 'Christian', color: '#1a6b8a' },
+  { name: 'Anne',      color: '#e91e8c' },
+  { name: 'Zoé',       color: '#f39c12' },
+  { name: 'Léna',      color: '#8e44ad' },
+  { name: 'Léo',       color: '#27ae60' },
+  { name: 'Nino',      color: '#e74c3c' },
+  { name: 'Remy',      color: '#2980b9' },
+  { name: 'Lou',       color: '#16a085' },
+  { name: 'Domi',      color: '#d35400' },
+  { name: 'Olivier',   color: '#c0392b' },
+];
+
+// Couleurs réservées aux personnes prédéfinies (non disponibles pour "Autre")
+const RESERVED_COLORS = PEOPLE.map(p => p.color);
+
+// Palette pour "Autre personne" — couleurs non réservées
+const OTHER_COLORS = [
+  '#6c5ce7', '#00b894', '#fd79a8', '#636e72',
+  '#b2bec3', '#55efc4', '#a29bfe', '#fab1a0',
 ];
 
 // ============================================================
@@ -181,19 +195,63 @@ function evtToFC(evt) {
 // ============================================================
 //  MODALE AJOUT SÉJOUR
 // ============================================================
-function buildColorPicker() {
-  const container = document.getElementById('color-picker');
+function buildPersonPicker() {
+  const container = document.getElementById('person-picker');
   container.innerHTML = '';
-  COLORS.forEach(c => {
+
+  // Boutons personnes prédéfinies
+  PEOPLE.forEach(p => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'color-swatch' + (c.value === state.selectedColor ? ' selected' : '');
-    btn.style.background = c.value;
-    btn.title = c.name;
-    btn.setAttribute('aria-label', c.name);
+    btn.className = 'person-btn';
+    btn.style.setProperty('--person-color', p.color);
+    btn.textContent = p.name;
+    btn.onclick = () => selectPerson(p.name, p.color);
+    container.appendChild(btn);
+  });
+
+  // Bouton "Autre"
+  const other = document.createElement('button');
+  other.type = 'button';
+  other.className = 'person-btn person-btn-other';
+  other.textContent = '+ Autre';
+  other.onclick = () => showOtherForm();
+  container.appendChild(other);
+}
+
+function selectPerson(name, color) {
+  state.selectedColor = color;
+  state.selectedName  = name;
+  // Mettre en surbrillance le bouton sélectionné
+  document.querySelectorAll('.person-btn').forEach(b => b.classList.remove('selected'));
+  const btns = document.querySelectorAll('.person-btn');
+  btns.forEach(b => { if (b.textContent === name) b.classList.add('selected'); });
+  // Cacher le formulaire "autre"
+  document.getElementById('other-form').classList.add('hidden');
+}
+
+function showOtherForm() {
+  document.querySelectorAll('.person-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.person-btn-other').classList.add('selected');
+  state.selectedName  = '';
+  state.selectedColor = OTHER_COLORS[0];
+  document.getElementById('other-form').classList.remove('hidden');
+  document.getElementById('other-name').value = '';
+  buildOtherColorPicker();
+  document.getElementById('other-name').focus();
+}
+
+function buildOtherColorPicker() {
+  const container = document.getElementById('other-color-picker');
+  container.innerHTML = '';
+  OTHER_COLORS.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'color-swatch' + (c === state.selectedColor ? ' selected' : '');
+    btn.style.background = c;
     btn.onclick = () => {
-      state.selectedColor = c.value;
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      state.selectedColor = c;
+      container.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
       btn.classList.add('selected');
     };
     container.appendChild(btn);
@@ -201,14 +259,19 @@ function buildColorPicker() {
 }
 
 function openEventModal(start, end) {
-  document.getElementById('ev-title').value = '';
+  state.selectedName  = PEOPLE[0].name;
+  state.selectedColor = PEOPLE[0].color;
   document.getElementById('ev-start').value = start;
   document.getElementById('ev-end').value   = end;
-  state.selectedColor = COLORS[0].value;
-  buildColorPicker();
+  document.getElementById('other-form').classList.add('hidden');
+  buildPersonPicker();
+  // Pré-sélectionner la première personne
+  setTimeout(() => {
+    const first = document.querySelector('.person-btn');
+    if (first) first.classList.add('selected');
+  }, 0);
   document.getElementById('event-modal').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
-  document.getElementById('ev-title').focus();
 }
 
 function closeEventModal() {
@@ -218,11 +281,17 @@ function closeEventModal() {
 }
 
 async function saveEvent() {
-  const title = document.getElementById('ev-title').value.trim();
+  const otherFormVisible = !document.getElementById('other-form').classList.contains('hidden');
+  let title = state.selectedName;
+  if (otherFormVisible) {
+    title = document.getElementById('other-name').value.trim();
+    if (!title) { document.getElementById('other-name').focus(); return; }
+    state.selectedName = title;
+  }
+  if (!title) return;
+
   const start = document.getElementById('ev-start').value;
   const end   = document.getElementById('ev-end').value;
-
-  if (!title) { document.getElementById('ev-title').focus(); return; }
   if (!start || !end || end < start) {
     alert('Veuillez saisir des dates valides.');
     return;
@@ -414,34 +483,12 @@ function closeLightbox() {
   document.getElementById('lightbox-img').src = '';
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEventModal(); closeDetailModal(); closeTokenModal(); } });
-
-// ============================================================
-//  MODALE TOKEN
-// ============================================================
-function openTokenModal() {
-  document.getElementById('token-input').value = getToken();
-  document.getElementById('token-modal').classList.remove('hidden');
-  document.getElementById('token-overlay').classList.remove('hidden');
-  document.getElementById('token-input').focus();
-}
-function closeTokenModal() {
-  document.getElementById('token-modal').classList.add('hidden');
-  document.getElementById('token-overlay').classList.add('hidden');
-}
-function saveToken() {
-  const t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  localStorage.setItem('civelle_gh_token', t);
-  closeTokenModal();
-}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEventModal(); closeDetailModal(); } });
 
 // ============================================================
 //  INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Afficher la modale token au premier lancement si pas encore configuré
-  if (!getToken()) openTokenModal();
   initCalendar();
   renderStepIndicators();
   renderStep(0);
