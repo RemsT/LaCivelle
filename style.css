@@ -1,0 +1,711 @@
+/* ============================================================
+   LA CIVELLE — CAPBRETON
+   Thème plage, 100% responsive
+   ============================================================ */
+
+:root {
+  --ocean:       #1a6b8a;
+  --ocean-light: #2a9bc4;
+  --ocean-dark:  #134f67;
+  --sand:        #f5e6c8;
+  --sand-dark:   #e8d4a0;
+  --seafoam:     #e0f4f8;
+  --white:       #ffffff;
+  --text:        #2c3e50;
+  --text-light:  #6b8599;
+  --success:     #27ae60;
+  --success-light: #e8f8f0;
+  --danger:      #e74c3c;
+  --shadow:      rgba(0, 0, 0, 0.1);
+  --font:        'Nunito', sans-serif;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--sand);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+button { font-family: var(--font); cursor: pointer; }
+a { font-family: var(--font); }
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  background: linear-gradient(135deg, var(--ocean-dark) 0%, var(--ocean) 50%, var(--ocean-light) 100%);
+  position: relative;
+  padding: 32px 20px 0;
+  overflow: hidden;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 28px;
+}
+
+.header-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.site-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.site-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.wave-divider {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+}
+.wave-divider svg { width: 100%; height: 40px; }
+
+/* ============================================================
+   TAB NAV
+   ============================================================ */
+.tab-nav {
+  display: flex;
+  background: var(--white);
+  border-bottom: 2px solid var(--sand-dark);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 15px 8px;
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-light);
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--ocean); background: var(--seafoam); }
+.tab-btn.active { color: var(--ocean); border-bottom-color: var(--ocean); }
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============================================================
+   SÉJOURS — CARTE PROCHAINE VISITE
+   ============================================================ */
+.next-visit-card {
+  background: linear-gradient(135deg, var(--ocean) 0%, var(--ocean-light) 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: var(--white);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(26, 107, 138, 0.35);
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
+}
+
+.next-visit-card::before {
+  content: "🌊";
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  font-size: 3.5rem;
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.next-visit-loading {
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.next-visit-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+}
+
+.next-visit-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.next-visit-dates {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 8px;
+}
+
+.next-visit-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.next-visit-empty {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ============================================================
+   SÉJOURS — FULLCALENDAR
+   ============================================================ */
+.calendar-tip {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  text-align: center;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+#fullcalendar {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+/* Surcharges FullCalendar */
+#fullcalendar .fc-toolbar-title { font-family: var(--font); font-weight: 800; font-size: 1.1rem; }
+#fullcalendar .fc-button         { font-family: var(--font); font-weight: 700; background: var(--ocean); border-color: var(--ocean); }
+#fullcalendar .fc-button:hover   { background: var(--ocean-light); border-color: var(--ocean-light); }
+#fullcalendar .fc-button-active,
+#fullcalendar .fc-button:focus   { background: var(--ocean-dark) !important; border-color: var(--ocean-dark) !important; box-shadow: none !important; }
+#fullcalendar .fc-today-button   { background: var(--sand-dark); border-color: var(--sand-dark); color: var(--text); }
+#fullcalendar .fc-today-button:hover { background: var(--sand); }
+#fullcalendar .fc-day-today      { background: var(--seafoam) !important; }
+#fullcalendar .fc-highlight      { background: rgba(26,107,138,0.15) !important; }
+#fullcalendar .fc-event          { border-radius: 6px; padding: 2px 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+#fullcalendar .fc-list-event     { cursor: pointer; }
+
+/* ============================================================
+   MODALES
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+}
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: min(460px, 92vw);
+}
+.modal.hidden { display: none; }
+
+.modal-content {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+.modal-content h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+.modal-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.modal-field input[type=text],
+.modal-field input[type=date] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--sand-dark);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color 0.2s;
+}
+.modal-field input:focus {
+  outline: none;
+  border-color: var(--ocean);
+}
+
+.modal-dates {
+  display: flex;
+  gap: 12px;
+}
+.modal-dates > div { flex: 1; }
+
+/* Color picker */
+.modal-colors label { margin-bottom: 10px; }
+.color-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.color-swatch:hover    { transform: scale(1.15); }
+.color-swatch.selected { border-color: var(--text); transform: scale(1.15); }
+
+/* Boutons modale */
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-modal-save {
+  flex: 1;
+  background: var(--ocean);
+  color: var(--white);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s;
+}
+.btn-modal-save:hover  { background: var(--ocean-light); }
+
+.btn-modal-cancel {
+  flex: 1;
+  background: var(--white);
+  color: var(--text-light);
+  border: 2px solid var(--sand-dark);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s;
+}
+.btn-modal-cancel:hover { background: var(--sand); }
+
+.btn-modal-delete {
+  flex: 1;
+  background: var(--white);
+  color: var(--danger);
+  border: 2px solid var(--danger);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-modal-delete:hover { background: var(--danger); color: var(--white); }
+
+.detail-dates {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   CHECK-OUT — BARRE DE PROGRESSION
+   ============================================================ */
+.progress-header {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 18px 20px 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+.progress-bar-track {
+  height: 10px;
+  background: var(--sand-dark);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success), #2ecc71);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.progress-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.progress-step-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* Indicateurs d'étapes */
+.step-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.step-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--sand-dark);
+  background: var(--white);
+  color: var(--text-light);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-dot:hover { border-color: var(--ocean); color: var(--ocean); }
+.step-dot.done { background: var(--success); border-color: var(--success); color: var(--white); }
+.step-dot.active { background: var(--ocean); border-color: var(--ocean); color: var(--white); transform: scale(1.15); }
+
+/* ============================================================
+   CHECK-OUT — CONTENU DE L'ÉTAPE
+   ============================================================ */
+.step-content {
+  margin-bottom: 20px;
+}
+
+.step-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--sand-dark);
+}
+
+.checklist-item {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 6px var(--shadow);
+  transition: background 0.15s;
+}
+
+.checklist-item.checked {
+  background: var(--success-light);
+}
+
+.item-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.item-checkbox {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  accent-color: var(--success);
+  cursor: pointer;
+  margin-top: 1px;
+}
+
+.item-text {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+
+.checklist-item.checked .item-text {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+/* Thumbnails photos */
+.item-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  margin-left: 34px;
+}
+
+.photo-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+}
+.photo-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   BOUTONS NAVIGATION
+   ============================================================ */
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.btn-nav {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+}
+
+.btn-prev {
+  background: var(--white);
+  color: var(--ocean);
+  border: 2px solid var(--ocean);
+}
+.btn-prev:hover:not(:disabled) { background: var(--seafoam); }
+.btn-prev:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-next {
+  background: var(--ocean);
+  color: var(--white);
+  box-shadow: 0 3px 10px rgba(26,107,138,0.3);
+}
+.btn-next:hover { background: var(--ocean-light); transform: translateY(-1px); }
+.btn-next.btn-finish { background: var(--success); box-shadow: 0 3px 10px rgba(39,174,96,0.3); }
+.btn-next.btn-finish:hover { background: #2ecc71; }
+
+/* Bouton reset */
+.reset-area { text-align: center; }
+.btn-reset {
+  background: transparent;
+  border: 2px solid var(--danger);
+  color: var(--danger);
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-reset:hover { background: var(--danger); color: var(--white); }
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  cursor: zoom-out;
+}
+
+.lightbox.hidden { display: none; }
+
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  cursor: default;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 1.4rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 1001;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.3); }
+
+/* ============================================================
+   ÉCRAN DE FIN
+   ============================================================ */
+.finish-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--ocean) 0%, var(--ocean-light) 100%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+.finish-screen.hidden { display: none; }
+
+.finish-inner {
+  text-align: center;
+  color: var(--white);
+}
+
+.finish-icon { font-size: 5rem; margin-bottom: 20px; }
+
+.finish-inner h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.finish-inner p {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 32px;
+}
+
+.btn-finish-reset {
+  background: var(--white);
+  color: var(--ocean);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.btn-finish-reset:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablette et mobile */
+@media (max-width: 768px) {
+  .site-title { font-size: 1.6rem; }
+  .header-icon { font-size: 2.2rem; }
+  .calendar-embed-wrapper iframe { height: 450px; }
+  .main-content { padding: 16px 12px 48px; }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .site-title { font-size: 1.35rem; }
+  .site-subtitle { font-size: 0.82rem; }
+  .header-inner { gap: 10px; }
+  .header-icon { font-size: 1.9rem; }
+
+  .tab-btn { font-size: 0.9rem; padding: 12px 6px; }
+
+  .next-visit-name { font-size: 1.25rem; }
+  .next-visit-dates { font-size: 0.9rem; }
+
+  .calendar-embed-wrapper iframe { height: 380px; }
+
+  .step-dot { width: 30px; height: 30px; font-size: 0.65rem; }
+
+  .item-text { font-size: 0.92rem; }
+
+  .photo-thumb { width: 70px; height: 70px; }
+
+  .nav-buttons { flex-direction: column; }
+  .btn-nav { width: 100%; }
+
+  .finish-inner h2 { font-size: 1.6rem; }
+
+  .lightbox img { max-width: 100vw; max-height: 85vh; border-radius: 0; }
+}
+
+/* Très petits écrans */
+@media (max-width: 360px) {
+  .step-indicators { gap: 5px; }
+  .step-dot { width: 26px; height: 26px; font-size: 0.6rem; }
+}

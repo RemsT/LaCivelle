@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Civelle — Capbreton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="header-icon">🏖️</span>
+      <div>
+        <h1 class="site-title">La Civelle</h1>
+        <p class="site-subtitle">Notre mobil-home à Capbreton</p>
+      </div>
+    </div>
+    <div class="wave-divider">
+      <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="#f5e6c8"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true"
+            aria-controls="panel-calendar" id="tab-calendar"
+            onclick="switchTab('calendar')">
+      📅 Séjours
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            aria-controls="panel-checkout" id="tab-checkout"
+            onclick="switchTab('checkout')">
+      ✅ Check-out
+    </button>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- ======= ONGLET SÉJOURS ======= -->
+    <div id="panel-calendar" class="tab-panel active" role="tabpanel" aria-labelledby="tab-calendar">
+      <p class="calendar-tip">Cliquez sur une période pour ajouter un séjour</p>
+      <div id="fullcalendar"></div>
+    </div>
+
+    <!-- ======= ONGLET CHECK-OUT ======= -->
+    <div id="panel-checkout" class="tab-panel" role="tabpanel" aria-labelledby="tab-checkout">
+
+      <div class="progress-header">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-meta">
+          <span class="progress-label" id="progress-label">0 / 28 tâches</span>
+          <span class="progress-step-label" id="progress-step-label">Étape 1 / 6</span>
+        </div>
+        <div class="step-indicators" id="step-indicators" role="navigation" aria-label="Étapes"></div>
+      </div>
+
+      <div id="step-content" class="step-content"></div>
+
+      <div class="nav-buttons" id="nav-buttons">
+        <button class="btn-nav btn-prev" id="btn-prev" onclick="goPrev()">← Précédent</button>
+        <button class="btn-nav btn-next" id="btn-next" onclick="goNext()">Suivant →</button>
+      </div>
+
+      <div class="reset-area">
+        <button class="btn-reset" onclick="resetChecklist()">🔄 Tout réinitialiser</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODALE AJOUT SÉJOUR -->
+  <div id="event-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <h3 id="modal-title">🏖️ Nouveau séjour</h3>
+      <div class="modal-field">
+        <label for="ev-title">Nom / Famille</label>
+        <input id="ev-title" type="text" placeholder="ex : Christian" autocomplete="off">
+      </div>
+      <div class="modal-field modal-dates">
+        <div>
+          <label for="ev-start">Du</label>
+          <input id="ev-start" type="date">
+        </div>
+        <div>
+          <label for="ev-end">Au</label>
+          <input id="ev-end" type="date">
+        </div>
+      </div>
+      <div class="modal-field modal-colors">
+        <label>Couleur</label>
+        <div class="color-picker" id="color-picker"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-save" onclick="saveEvent()">Enregistrer</button>
+        <button class="btn-modal-cancel" onclick="closeEventModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeEventModal()"></div>
+
+  <!-- MODALE DÉTAIL ÉVÉNEMENT -->
+  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <h3 id="detail-title"></h3>
+      <p id="detail-dates" class="detail-dates"></p>
+      <div class="modal-actions">
+        <button class="btn-modal-delete" onclick="deleteEvent()">🗑 Supprimer</button>
+        <button class="btn-modal-cancel" onclick="closeDetailModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+  <div id="detail-overlay" class="modal-overlay hidden" onclick="closeDetailModal()"></div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
+    <img id="lightbox-img" src="" alt="Photo agrandie">
+  </div>
+
+  <!-- ÉCRAN DE FIN -->
+  <div id="finish-screen" class="finish-screen hidden">
+    <div class="finish-inner">
+      <div class="finish-icon">🏖️</div>
+      <h2>Tout est en ordre !</h2>
+      <p>Bon voyage et à bientôt à Capbreton !</p>
+      <button class="btn-finish-reset" onclick="resetChecklist()">🔄 Nouvelle checklist</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/fr.global.min.js"></script>
+  <script src="config.js"></script>
+  <script src="checklist-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
