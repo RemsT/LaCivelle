@@ -194,47 +194,175 @@ img { max-width: 100%; display: block; }
 }
 
 /* ============================================================
-   SÉJOURS — ACTIONS & IFRAME
+   SÉJOURS — FULLCALENDAR
    ============================================================ */
-.calendar-actions {
-  margin-bottom: 12px;
-}
-
-.btn-add-event {
-  display: inline-block;
-  background: var(--ocean);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.95rem;
-  transition: background 0.2s, transform 0.1s;
-  box-shadow: 0 3px 10px rgba(26, 107, 138, 0.3);
-  margin-bottom: 10px;
-}
-.btn-add-event:hover {
-  background: var(--ocean-light);
-  transform: translateY(-1px);
-}
-
-.calendar-hint {
+.calendar-tip {
   font-size: 0.82rem;
   color: var(--text-light);
-  line-height: 1.4;
+  text-align: center;
+  margin-bottom: 10px;
+  font-style: italic;
 }
 
-.calendar-embed-wrapper {
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px var(--shadow);
+#fullcalendar {
   background: var(--white);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px var(--shadow);
 }
 
-.calendar-embed-wrapper iframe {
+/* Surcharges FullCalendar */
+#fullcalendar .fc-toolbar-title { font-family: var(--font); font-weight: 800; font-size: 1.1rem; }
+#fullcalendar .fc-button         { font-family: var(--font); font-weight: 700; background: var(--ocean); border-color: var(--ocean); }
+#fullcalendar .fc-button:hover   { background: var(--ocean-light); border-color: var(--ocean-light); }
+#fullcalendar .fc-button-active,
+#fullcalendar .fc-button:focus   { background: var(--ocean-dark) !important; border-color: var(--ocean-dark) !important; box-shadow: none !important; }
+#fullcalendar .fc-today-button   { background: var(--sand-dark); border-color: var(--sand-dark); color: var(--text); }
+#fullcalendar .fc-today-button:hover { background: var(--sand); }
+#fullcalendar .fc-day-today      { background: var(--seafoam) !important; }
+#fullcalendar .fc-highlight      { background: rgba(26,107,138,0.15) !important; }
+#fullcalendar .fc-event          { border-radius: 6px; padding: 2px 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+#fullcalendar .fc-list-event     { cursor: pointer; }
+
+/* ============================================================
+   MODALES
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+}
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+  width: min(460px, 92vw);
+}
+.modal.hidden { display: none; }
+
+.modal-content {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+.modal-content h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+.modal-field label {
   display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.modal-field input[type=text],
+.modal-field input[type=date] {
   width: 100%;
-  height: 650px;
+  padding: 10px 12px;
+  border: 2px solid var(--sand-dark);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--white);
+  transition: border-color 0.2s;
+}
+.modal-field input:focus {
+  outline: none;
+  border-color: var(--ocean);
+}
+
+.modal-dates {
+  display: flex;
+  gap: 12px;
+}
+.modal-dates > div { flex: 1; }
+
+/* Color picker */
+.modal-colors label { margin-bottom: 10px; }
+.color-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.color-swatch:hover    { transform: scale(1.15); }
+.color-swatch.selected { border-color: var(--text); transform: scale(1.15); }
+
+/* Boutons modale */
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-modal-save {
+  flex: 1;
+  background: var(--ocean);
+  color: var(--white);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s;
+}
+.btn-modal-save:hover  { background: var(--ocean-light); }
+
+.btn-modal-cancel {
+  flex: 1;
+  background: var(--white);
+  color: var(--text-light);
+  border: 2px solid var(--sand-dark);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s;
+}
+.btn-modal-cancel:hover { background: var(--sand); }
+
+.btn-modal-delete {
+  flex: 1;
+  background: var(--white);
+  color: var(--danger);
+  border: 2px solid var(--danger);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.97rem;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-modal-delete:hover { background: var(--danger); color: var(--white); }
+
+.detail-dates {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
 }
 
 /* ============================================================

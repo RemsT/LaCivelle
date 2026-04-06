@@ -6,6 +6,7 @@
   <title>La Civelle — Capbreton</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -44,27 +45,13 @@
 
     <!-- ======= ONGLET SÉJOURS ======= -->
     <div id="panel-calendar" class="tab-panel active" role="tabpanel" aria-labelledby="tab-calendar">
-
-      <!-- Iframe Google Calendar -->
-      <div class="calendar-embed-wrapper">
-        <iframe
-          id="google-calendar-iframe"
-          src=""
-          style="border:0"
-          width="100%"
-          frameborder="0"
-          scrolling="no"
-          title="Calendrier La Civelle"
-          loading="lazy">
-        </iframe>
-      </div>
-
+      <p class="calendar-tip">Cliquez sur une période pour ajouter un séjour</p>
+      <div id="fullcalendar"></div>
     </div>
 
     <!-- ======= ONGLET CHECK-OUT ======= -->
     <div id="panel-checkout" class="tab-panel" role="tabpanel" aria-labelledby="tab-checkout">
 
-      <!-- Barre de progression globale -->
       <div class="progress-header">
         <div class="progress-bar-track">
           <div class="progress-bar-fill" id="progress-fill"></div>
@@ -73,20 +60,16 @@
           <span class="progress-label" id="progress-label">0 / 28 tâches</span>
           <span class="progress-step-label" id="progress-step-label">Étape 1 / 6</span>
         </div>
-        <!-- Indicateurs d'étapes -->
         <div class="step-indicators" id="step-indicators" role="navigation" aria-label="Étapes"></div>
       </div>
 
-      <!-- Contenu de l'étape courante -->
       <div id="step-content" class="step-content"></div>
 
-      <!-- Boutons navigation -->
       <div class="nav-buttons" id="nav-buttons">
         <button class="btn-nav btn-prev" id="btn-prev" onclick="goPrev()">← Précédent</button>
         <button class="btn-nav btn-next" id="btn-next" onclick="goNext()">Suivant →</button>
       </div>
 
-      <!-- Bouton reset -->
       <div class="reset-area">
         <button class="btn-reset" onclick="resetChecklist()">🔄 Tout réinitialiser</button>
       </div>
@@ -94,6 +77,49 @@
     </div>
 
   </main>
+
+  <!-- MODALE AJOUT SÉJOUR -->
+  <div id="event-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <h3 id="modal-title">🏖️ Nouveau séjour</h3>
+      <div class="modal-field">
+        <label for="ev-title">Nom / Famille</label>
+        <input id="ev-title" type="text" placeholder="ex : Famille Salmon" autocomplete="off">
+      </div>
+      <div class="modal-field modal-dates">
+        <div>
+          <label for="ev-start">Du</label>
+          <input id="ev-start" type="date">
+        </div>
+        <div>
+          <label for="ev-end">Au</label>
+          <input id="ev-end" type="date">
+        </div>
+      </div>
+      <div class="modal-field modal-colors">
+        <label>Couleur</label>
+        <div class="color-picker" id="color-picker"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-save" onclick="saveEvent()">Enregistrer</button>
+        <button class="btn-modal-cancel" onclick="closeEventModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeEventModal()"></div>
+
+  <!-- MODALE DÉTAIL ÉVÉNEMENT -->
+  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <h3 id="detail-title"></h3>
+      <p id="detail-dates" class="detail-dates"></p>
+      <div class="modal-actions">
+        <button class="btn-modal-delete" onclick="deleteEvent()">🗑 Supprimer</button>
+        <button class="btn-modal-cancel" onclick="closeDetailModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+  <div id="detail-overlay" class="modal-overlay hidden" onclick="closeDetailModal()"></div>
 
   <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
@@ -111,6 +137,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/fr.global.min.js"></script>
   <script src="checklist-data.js"></script>
   <script src="app.js"></script>
 </body>
