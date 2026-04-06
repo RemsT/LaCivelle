@@ -7,7 +7,7 @@
 //  (Settings → Developer settings → Personal access tokens → Fine-grained)
 //  Permissions requises : Contents → Read and write
 //
-const GITHUB_TOKEN = 'VOTRE_GITHUB_TOKEN';
+const GITHUB_TOKEN = (window.CONFIG && window.CONFIG.GITHUB_TOKEN) || '';
 const GITHUB_REPO  = 'RemsT/LaCivelle';
 const EVENTS_FILE  = 'events.json';
 
