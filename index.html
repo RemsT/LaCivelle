@@ -15,10 +15,11 @@
   <header class="site-header">
     <div class="header-inner">
       <span class="header-icon">🏖️</span>
-      <div>
+      <div class="header-text">
         <h1 class="site-title">La Civelle</h1>
         <p class="site-subtitle">Notre mobil-home à Capbreton</p>
       </div>
+      <button class="btn-settings" onclick="openTokenModal()" title="Configuration" aria-label="Configuration">⚙️</button>
     </div>
     <div class="wave-divider">
       <svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,6 +122,23 @@
   </div>
   <div id="detail-overlay" class="modal-overlay hidden" onclick="closeDetailModal()"></div>
 
+  <!-- MODALE TOKEN -->
+  <div id="token-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="token-modal-title">
+    <div class="modal-content">
+      <h3 id="token-modal-title">⚙️ Configuration</h3>
+      <p class="token-desc">Saisir le Personal Access Token GitHub pour pouvoir ajouter et supprimer des séjours. Il sera sauvegardé sur cet appareil uniquement.</p>
+      <div class="modal-field">
+        <label for="token-input">GitHub Token</label>
+        <input id="token-input" type="password" placeholder="github_pat_..." autocomplete="off">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-save" onclick="saveToken()">Enregistrer</button>
+        <button class="btn-modal-cancel" onclick="closeTokenModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+  <div id="token-overlay" class="modal-overlay hidden" onclick="closeTokenModal()"></div>
+
   <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
@@ -140,7 +158,6 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/fr.global.min.js"></script>
-  <script src="config.js"></script>
   <script src="checklist-data.js"></script>
   <script src="app.js"></script>
 </body>

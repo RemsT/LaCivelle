@@ -7,7 +7,8 @@
 //  (Settings → Developer settings → Personal access tokens → Fine-grained)
 //  Permissions requises : Contents → Read and write
 //
-const GITHUB_TOKEN = (window.CONFIG && window.CONFIG.GITHUB_TOKEN) || '';
+// Token stocké dans localStorage — saisi une fois via la modale de configuration
+function getToken() { return localStorage.getItem('civelle_gh_token') || ''; }
 const GITHUB_REPO  = 'RemsT/LaCivelle';
 const EVENTS_FILE  = 'events.json';
 
@@ -65,7 +66,7 @@ async function fetchEvents() {
   try {
     const res = await fetch(
       `https://api.github.com/repos/${GITHUB_REPO}/contents/${EVENTS_FILE}`,
-      { headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' } }
+      { headers: { Authorization: `token ${getToken()}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
@@ -90,7 +91,7 @@ async function saveEvents(events) {
       {
         method: 'PUT',
         headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
+          Authorization: `token ${getToken()}`,
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
         },
@@ -242,7 +243,7 @@ async function saveEvent() {
 
   // Sauvegarder en arrière-plan
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur lors de la sauvegarde. Vérifiez le token GitHub dans app.js.');
+  if (!ok) openTokenModal();
 }
 
 // ============================================================
@@ -282,7 +283,7 @@ async function deleteEvent() {
   closeDetailModal();
 
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur lors de la suppression. Vérifiez le token GitHub dans app.js.');
+  if (!ok) openTokenModal();
 }
 
 // ============================================================
@@ -413,12 +414,34 @@ function closeLightbox() {
   document.getElementById('lightbox-img').src = '';
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEventModal(); closeDetailModal(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeEventModal(); closeDetailModal(); closeTokenModal(); } });
+
+// ============================================================
+//  MODALE TOKEN
+// ============================================================
+function openTokenModal() {
+  document.getElementById('token-input').value = getToken();
+  document.getElementById('token-modal').classList.remove('hidden');
+  document.getElementById('token-overlay').classList.remove('hidden');
+  document.getElementById('token-input').focus();
+}
+function closeTokenModal() {
+  document.getElementById('token-modal').classList.add('hidden');
+  document.getElementById('token-overlay').classList.add('hidden');
+}
+function saveToken() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  localStorage.setItem('civelle_gh_token', t);
+  closeTokenModal();
+}
 
 // ============================================================
 //  INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Afficher la modale token au premier lancement si pas encore configuré
+  if (!getToken()) openTokenModal();
   initCalendar();
   renderStepIndicators();
   renderStep(0);
