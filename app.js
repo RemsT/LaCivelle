@@ -7,7 +7,7 @@
 //  2. Activer l'API Google Calendar sur console.cloud.google.com
 //  3. Coller le Calendar ID et la clé API ci-dessous
 //
-const GOOGLE_CALENDAR_ID = 'VOTRE_ID@group.calendar.google.com';
+const GOOGLE_CALENDAR_ID = 'a80ad7f5e68c553cf07da4471391ea2d59ae9b923929537869499a73cae57187@group.calendar.google.com';
 const GOOGLE_API_KEY     = 'VOTRE_CLE_API_GOOGLE';
 
 // ============================================================
@@ -77,11 +77,9 @@ function switchTab(name) {
 async function loadNextVisit() {
   const card = document.getElementById('next-visit-card');
 
-  // Pas de config → affiche un placeholder
-  if (GOOGLE_CALENDAR_ID.startsWith('VOTRE') || GOOGLE_API_KEY.startsWith('VOTRE')) {
-    card.innerHTML = `
-      <div class="next-visit-label">📅 Prochaine visite</div>
-      <div class="next-visit-empty">Calendrier non configuré — voir les instructions dans app.js</div>`;
+  // Pas de clé API → masque la carte
+  if (GOOGLE_API_KEY.startsWith('VOTRE')) {
+    card.style.display = 'none';
     return;
   }
 
