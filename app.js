@@ -121,9 +121,17 @@ async function initCalendar() {
     headerToolbar: {
       left:   'prev,next today',
       center: 'title',
-      right:  'dayGridMonth,listMonth',
+      right:  window.innerWidth < 600 ? 'dayGridMonth,listMonth' : 'dayGridMonth,multiMonthYear,listMonth',
     },
-    buttonText: { today: "Aujourd'hui", month: 'Mois', list: 'Liste' },
+    buttonText: { today: "Aujourd'hui", month: 'Mois', year: 'Année', list: 'Liste' },
+    views: {
+      multiMonthYear: {
+        type: 'multiMonth',
+        duration: { years: 1 },
+        multiMonthMaxColumns: window.innerWidth < 768 ? 1 : 2,
+        multiMonthMinWidth: 280,
+      },
+    },
     height: 'auto',
     selectable: true,
     selectMirror: true,
