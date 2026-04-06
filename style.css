@@ -197,7 +197,7 @@ img { max-width: 100%; display: block; }
    SÉJOURS — ACTIONS & IFRAME
    ============================================================ */
 .calendar-actions {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .btn-add-event {
@@ -234,7 +234,7 @@ img { max-width: 100%; display: block; }
 .calendar-embed-wrapper iframe {
   display: block;
   width: 100%;
-  height: 560px;
+  height: 650px;
 }
 
 /* ============================================================
