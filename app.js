@@ -10,7 +10,7 @@
 // Token GitHub — à remplacer une seule fois ici, tous les appareils l'utilisent automatiquement
 // Créer un Fine-grained token sur github.com/settings/tokens avec :
 //   Repository: LaCivelle — Permission: Contents → Read and write
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const GITHUB_REPO  = 'RemsT/LaCivelle';
 const EVENTS_FILE  = 'events.json';
 function getToken() { return GITHUB_TOKEN; }
