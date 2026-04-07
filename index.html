@@ -17,7 +17,7 @@
       <span class="header-icon">🏖️</span>
       <div class="header-text">
         <h1 class="site-title">La Civelle</h1>
-        <p class="site-subtitle">Notre mobil-home à Capbreton</p>
+        <p class="site-subtitle">Gure Kabanoia</p>
       </div>
     </div>
     <div class="wave-divider">
@@ -115,14 +115,38 @@
   </div>
   <div id="modal-overlay" class="modal-overlay hidden" onclick="closeEventModal()"></div>
 
-  <!-- MODALE DÉTAIL ÉVÉNEMENT -->
-  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true">
+  <!-- MODALE ÉDITION ÉVÉNEMENT -->
+  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
     <div class="modal-content">
-      <h3 id="detail-title"></h3>
-      <p id="detail-dates" class="detail-dates"></p>
+      <h3 id="detail-modal-title">✏️ Modifier le séjour</h3>
+      <div class="modal-field">
+        <label for="edit-person-select">Qui ?</label>
+        <div class="person-select-row">
+          <span id="edit-person-dot" class="person-dot"></span>
+          <select id="edit-person-select" class="person-select-input" onchange="onEditPersonChange()"></select>
+        </div>
+        <div id="edit-other-form" class="other-form hidden">
+          <input id="edit-other-name" type="text" placeholder="Prénom ou nom" autocomplete="off" class="other-name-input">
+          <div style="margin-top:10px">
+            <label style="font-size:0.82rem;font-weight:700;color:#6b8599;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px">Couleur</label>
+            <div class="color-picker" id="edit-other-color-picker"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-field modal-dates">
+        <div>
+          <label for="edit-start">Du</label>
+          <input id="edit-start" type="date">
+        </div>
+        <div>
+          <label for="edit-end">Au</label>
+          <input id="edit-end" type="date">
+        </div>
+      </div>
       <div class="modal-actions">
+        <button class="btn-modal-save" onclick="updateEvent()">💾 Enregistrer</button>
         <button class="btn-modal-delete" onclick="deleteEvent()">🗑 Supprimer</button>
-        <button class="btn-modal-cancel" onclick="closeDetailModal()">Fermer</button>
+        <button class="btn-modal-cancel" onclick="closeDetailModal()">Annuler</button>
       </div>
     </div>
   </div>
