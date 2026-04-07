@@ -99,6 +99,7 @@ const state = {
   pendingEnd:     null,
   selectedColor:  PEOPLE[0].color,
   currentEventId: null,
+  modalOpen:      false,
 };
 
 // ============================================================
@@ -199,21 +200,23 @@ async function initCalendar() {
     },
     height: 'auto',
     selectable: true,
-    selectMirror: true,
-    unselectAuto: true,
+    selectMirror: false,
+    unselectAuto: false,   // on gère l'unselect manuellement
     longPressDelay: 300,
     selectLongPressDelay: 300,
     events: events.map(evtToFC),
     eventDisplay: 'block',
     displayEventTime: false,
 
-    // Tap sur un jour (mobile ET desktop) → ouvre modale avec ce jour
+    // Tap sur un jour → ouvre modale (dateClick ET select peuvent tous les deux
+    // se déclencher sur mobile ; le verrou state.modalOpen empêche la double ouverture)
     dateClick(info) {
+      if (state.modalOpen) return;
       openEventModal(info.dateStr, info.dateStr);
     },
 
-    // Sélection d'une plage (desktop drag) → ouvre modale avec la plage
     select(info) {
+      if (state.modalOpen) return;
       const endDate = new Date(info.endStr + 'T00:00:00');
       endDate.setDate(endDate.getDate() - 1);
       openEventModal(info.startStr, endDate.toISOString().slice(0, 10));
@@ -221,6 +224,7 @@ async function initCalendar() {
 
     // Clic sur un événement existant → ouvre modale détail
     eventClick(info) {
+      if (state.modalOpen) return;
       state.currentEventId = info.event.id;
       openDetailModal(info.event);
     },
@@ -308,12 +312,14 @@ function buildOtherColorPicker() {
 // ---- Scroll lock iOS sans sauter en haut ----
 let _scrollY = 0;
 function lockScroll() {
+  state.modalOpen = true;
   _scrollY = window.scrollY;
   document.body.style.top = `-${_scrollY}px`;
-  lockScroll();
+  document.body.classList.add('modal-open');
 }
 function unlockScroll() {
-  unlockScroll();
+  state.modalOpen = false;
+  document.body.classList.remove('modal-open');
   document.body.style.top = '';
   window.scrollTo(0, _scrollY);
 }
@@ -342,7 +348,6 @@ function closeEventModal() {
   document.getElementById('event-modal').classList.add('hidden');
   document.getElementById('modal-overlay').classList.add('hidden');
   unlockScroll();
-  if (state.calendar) state.calendar.unselect();
 }
 
 async function saveEvent() {
