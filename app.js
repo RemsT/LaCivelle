@@ -286,6 +286,11 @@ function buildOtherColorPicker() {
   });
 }
 
+function openEventModalToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  openEventModal(today, today);
+}
+
 function openEventModal(start, end) {
   state.selectedName  = PEOPLE[0].name;
   state.selectedColor = PEOPLE[0].color;
