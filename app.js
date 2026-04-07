@@ -128,6 +128,8 @@ async function initCalendar() {
     selectable: true,
     selectMirror: true,
     unselectAuto: true,
+    longPressDelay: 300,       // ms avant sélection sur mobile (iOS/Android)
+    selectLongPressDelay: 300, // idem pour la sélection de plage
     events: events.map(evtToFC),
     eventDisplay: 'block',
     displayEventTime: false,
@@ -238,11 +240,13 @@ function openEventModal(start, end) {
   updatePersonDot(PEOPLE[0].color);
   document.getElementById('event-modal').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
+  document.body.classList.add('modal-open');
 }
 
 function closeEventModal() {
   document.getElementById('event-modal').classList.add('hidden');
   document.getElementById('modal-overlay').classList.add('hidden');
+  document.body.classList.remove('modal-open');
   if (state.calendar) state.calendar.unselect();
 }
 
@@ -300,6 +304,7 @@ function openDetailModal(fcEvent) {
 
   document.getElementById('detail-modal').classList.remove('hidden');
   document.getElementById('detail-overlay').classList.remove('hidden');
+  document.body.classList.add('modal-open');
 }
 
 function buildEditPersonSelect(currentName, currentColor) {
@@ -368,6 +373,7 @@ function buildEditOtherColorPicker(selected) {
 function closeDetailModal() {
   document.getElementById('detail-modal').classList.add('hidden');
   document.getElementById('detail-overlay').classList.add('hidden');
+  document.body.classList.remove('modal-open');
   state.currentEventId = null;
 }
 
