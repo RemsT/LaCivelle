@@ -115,6 +115,10 @@ function switchTab(name) {
   btn.classList.add('active');
   btn.setAttribute('aria-selected', 'true');
 
+  // Afficher le FAB uniquement sur l'onglet calendrier
+  const fab = document.getElementById('fab-add');
+  if (fab) fab.style.display = name === 'calendar' ? 'flex' : 'none';
+
   // Re-render le calendrier quand on revient sur cet onglet
   if (name === 'calendar' && state.calendar) {
     setTimeout(() => state.calendar.updateSize(), 50);
@@ -186,19 +190,21 @@ async function initCalendar() {
     selectable: true,
     selectMirror: true,
     unselectAuto: true,
-    longPressDelay: 300,       // ms avant sélection sur mobile (iOS/Android)
-    selectLongPressDelay: 300, // idem pour la sélection de plage
+    longPressDelay: 300,
+    selectLongPressDelay: 300,
     events: events.map(evtToFC),
     eventDisplay: 'block',
     displayEventTime: false,
 
-    // Clic sur une plage → ouvre modale ajout
+    // Tap sur un jour (mobile ET desktop) → ouvre modale avec ce jour
+    dateClick(info) {
+      openEventModal(info.dateStr, info.dateStr);
+    },
+
+    // Sélection d'une plage (desktop drag) → ouvre modale avec la plage
     select(info) {
-      // Soustraire 1 jour car FullCalendar end est exclusif
       const endDate = new Date(info.endStr);
       endDate.setDate(endDate.getDate() - 1);
-      state.pendingStart = info.startStr;
-      state.pendingEnd   = endDate.toISOString().slice(0, 10);
       openEventModal(info.startStr, endDate.toISOString().slice(0, 10));
     },
 
@@ -286,6 +292,19 @@ function buildOtherColorPicker() {
   });
 }
 
+// ---- Scroll lock iOS sans sauter en haut ----
+let _scrollY = 0;
+function lockScroll() {
+  _scrollY = window.scrollY;
+  document.body.style.top = `-${_scrollY}px`;
+  lockScroll();
+}
+function unlockScroll() {
+  unlockScroll();
+  document.body.style.top = '';
+  window.scrollTo(0, _scrollY);
+}
+
 function openEventModalToday() {
   const today = new Date().toISOString().slice(0, 10);
   openEventModal(today, today);
@@ -303,13 +322,13 @@ function openEventModal(start, end) {
   updatePersonDot(PEOPLE[0].color);
   document.getElementById('event-modal').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  lockScroll();
 }
 
 function closeEventModal() {
   document.getElementById('event-modal').classList.add('hidden');
   document.getElementById('modal-overlay').classList.add('hidden');
-  document.body.classList.remove('modal-open');
+  unlockScroll();
   if (state.calendar) state.calendar.unselect();
 }
 
@@ -367,7 +386,7 @@ function openDetailModal(fcEvent) {
 
   document.getElementById('detail-modal').classList.remove('hidden');
   document.getElementById('detail-overlay').classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  lockScroll();
 }
 
 function buildEditPersonSelect(currentName, currentColor) {
@@ -436,7 +455,7 @@ function buildEditOtherColorPicker(selected) {
 function closeDetailModal() {
   document.getElementById('detail-modal').classList.add('hidden');
   document.getElementById('detail-overlay').classList.add('hidden');
-  document.body.classList.remove('modal-open');
+  unlockScroll();
   state.currentEventId = null;
 }
 

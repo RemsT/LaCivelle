@@ -311,9 +311,6 @@ img { max-width: 100%; display: block; }
 }
 .fab-add:hover  { background: var(--ocean-dark); }
 .fab-add:active { transform: scale(0.92); }
-/* Masquer le FAB quand l'onglet calendar n'est pas actif */
-#panel-calendar:not(.active) ~ .fab-add,
-.tab-panel:not(#panel-calendar) .fab-add { display: none; }
 
 #fullcalendar {
   background: var(--white);
@@ -392,7 +389,7 @@ img { max-width: 100%; display: block; }
   border: 2px solid var(--sand-dark);
   border-radius: 8px;
   font-family: var(--font);
-  font-size: 0.97rem;
+  font-size: 16px !important; /* ≥16px obligatoire sinon iOS zoome */
   font-weight: 600;
   color: var(--text);
   background: var(--white);
@@ -506,7 +503,7 @@ img { max-width: 100%; display: block; }
   border: 2px solid var(--sand-dark);
   border-radius: 8px;
   font-family: var(--font);
-  font-size: 0.97rem;
+  font-size: 16px !important; /* ≥16px pour éviter le zoom iOS */
   font-weight: 700;
   color: var(--text);
   background: var(--white);
@@ -524,7 +521,7 @@ img { max-width: 100%; display: block; }
   border: 2px solid var(--sand-dark);
   border-radius: 8px;
   font-family: var(--font);
-  font-size: 0.97rem;
+  font-size: 16px !important;
   font-weight: 600;
   color: var(--text);
   transition: border-color 0.2s;
@@ -850,11 +847,12 @@ button, a, .photo-thumb, .step-dot {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* iOS Safari : éviter que le scroll du body passe sous la modale */
+/* iOS Safari : scroll lock sans saut de page */
 body.modal-open {
   overflow: hidden;
   position: fixed;
   width: 100%;
+  /* top est injecté dynamiquement via JS (lockScroll) */
 }
 
 /* Tablette et mobile */

@@ -45,9 +45,8 @@
 
     <!-- ======= ONGLET SÉJOURS ======= -->
     <div id="panel-calendar" class="tab-panel active" role="tabpanel" aria-labelledby="tab-calendar">
-      <p class="calendar-tip">Sélectionnez une période ou appuyez sur + pour ajouter un séjour</p>
+      <p class="calendar-tip">Appuyez sur un jour ou sur + pour ajouter un séjour</p>
       <div id="fullcalendar"></div>
-      <button class="fab-add" onclick="openEventModalToday()" aria-label="Ajouter un séjour">+</button>
     </div>
 
     <!-- ======= ONGLET CHECK-OUT ======= -->
@@ -152,6 +151,9 @@
     </div>
   </div>
   <div id="detail-overlay" class="modal-overlay hidden" onclick="closeDetailModal()"></div>
+
+  <!-- BOUTON FLOTTANT AJOUT SÉJOUR (affiché uniquement sur l'onglet calendrier) -->
+  <button id="fab-add" class="fab-add" onclick="openEventModalToday()" aria-label="Ajouter un séjour">+</button>
 
   <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
