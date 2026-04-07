@@ -2,18 +2,9 @@
 //  LA CIVELLE — app.js
 // ============================================================
 //
-//  CONFIGURATION
-//  Remplacer GITHUB_TOKEN par un Personal Access Token GitHub
-//  (Settings → Developer settings → Personal access tokens → Fine-grained)
-//  Permissions requises : Contents → Read and write
+//  CONFIGURATION — Firebase Realtime Database (aucune clé requise)
 //
-// Token GitHub — à remplacer une seule fois ici, tous les appareils l'utilisent automatiquement
-// Créer un Fine-grained token sur github.com/settings/tokens avec :
-//   Repository: LaCivelle — Permission: Contents → Read and write
-const GITHUB_TOKEN = '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';
-const GITHUB_REPO  = 'RemsT/LaCivelle';
-const EVENTS_FILE  = 'events.json';
-function getToken() { return GITHUB_TOKEN; }
+const FIREBASE_URL = 'https://lacivelle-ab6d3-default-rtdb.europe-west1.firebasedatabase.app';
 
 // Personnes avec leur couleur attitrée
 const PEOPLE = [
@@ -46,7 +37,6 @@ const state = {
   currentStep:    0,
   calendar:       null,
   events:         [],
-  eventsSha:      null,   // SHA du fichier events.json sur GitHub
   pendingStart:   null,
   pendingEnd:     null,
   selectedColor:  PEOPLE[0].color,
@@ -74,18 +64,16 @@ function switchTab(name) {
 }
 
 // ============================================================
-//  GITHUB API — LECTURE / ÉCRITURE events.json
+//  FIREBASE — LECTURE / ÉCRITURE events
 // ============================================================
 async function fetchEvents() {
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_REPO}/contents/${EVENTS_FILE}`,
-      { headers: { Authorization: `token ${getToken()}`, Accept: 'application/vnd.github.v3+json' } }
-    );
+    const res = await fetch(`${FIREBASE_URL}/events.json`);
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
-    state.eventsSha = data.sha;
-    return JSON.parse(atob(data.content.replace(/\n/g, '')));
+    if (!data) return [];
+    // Firebase stocke un objet { key: event } — on retourne un tableau
+    return Object.values(data);
   } catch (e) {
     console.error('fetchEvents:', e);
     return [];
@@ -93,28 +81,16 @@ async function fetchEvents() {
 }
 
 async function saveEvents(events) {
-  const content = btoa(new TextEncoder().encode(JSON.stringify(events, null, 2)).reduce((s, b) => s + String.fromCharCode(b), ''));
-  const body = {
-    message: 'Mise à jour des séjours',
-    content,
-    sha: state.eventsSha,
-  };
   try {
-    const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_REPO}/contents/${EVENTS_FILE}`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `token ${getToken()}`,
-          Accept: 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    // Convertir le tableau en objet keyed par id pour Firebase
+    const obj = {};
+    events.forEach(e => { obj[e.id] = e; });
+    const res = await fetch(`${FIREBASE_URL}/events.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj),
+    });
     if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    state.eventsSha = data.content.sha;
     return true;
   } catch (e) {
     console.error('saveEvents:', e);
@@ -302,7 +278,7 @@ async function saveEvent() {
 
   // Sauvegarder en arrière-plan
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
 // ============================================================
@@ -342,7 +318,7 @@ async function deleteEvent() {
   closeDetailModal();
 
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
 // ============================================================
