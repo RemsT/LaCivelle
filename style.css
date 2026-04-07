@@ -287,6 +287,34 @@ img { max-width: 100%; display: block; }
   font-style: italic;
 }
 
+/* Bouton flottant + */
+.fab-add {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  right: 20px;
+  z-index: 500;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ocean);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  border: none;
+  box-shadow: 0 4px 16px rgba(26,107,138,0.45);
+  cursor: pointer;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .15s;
+}
+.fab-add:hover  { background: var(--ocean-dark); }
+.fab-add:active { transform: scale(0.92); }
+/* Masquer le FAB quand l'onglet calendar n'est pas actif */
+#panel-calendar:not(.active) ~ .fab-add,
+.tab-panel:not(#panel-calendar) .fab-add { display: none; }
+
 #fullcalendar {
   background: var(--white);
   border-radius: 14px;
