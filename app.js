@@ -119,6 +119,9 @@ function switchTab(name) {
   const fab = document.getElementById('fab-add');
   if (fab) fab.style.display = name === 'calendar' ? 'flex' : 'none';
 
+  // Re-render la checklist arrivée si on revient sur cet onglet
+  if (name === 'arrival') renderArrival();
+
   // Re-render le calendrier quand on revient sur cet onglet
   if (name === 'calendar' && state.calendar) {
     setTimeout(() => state.calendar.updateSize(), 50);
@@ -505,6 +508,63 @@ async function deleteEvent() {
 }
 
 // ============================================================
+//  ARRIVÉE — CHECKLIST SIMPLE
+// ============================================================
+const ARRIVAL_KEY = 'civelle_arrival_v1';
+
+function loadArrivalState() {
+  try { return JSON.parse(localStorage.getItem(ARRIVAL_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveArrivalState(s) { localStorage.setItem(ARRIVAL_KEY, JSON.stringify(s)); }
+
+function renderArrival() {
+  const checkState = loadArrivalState();
+  const container  = document.getElementById('arrival-content');
+  let html = '';
+  ARRIVAL_DATA.forEach(sec => {
+    html += `<h2 class="step-title">${sec.title}</h2>`;
+    sec.items.forEach(item => {
+      const checked = !!checkState[item.id];
+      let photosHtml = '';
+      if (item.photos && item.photos.length > 0) {
+        photosHtml = `<div class="item-photos">${
+          item.photos.map(src =>
+            `<img src="${src}" alt="Photo" class="photo-thumb"
+              onclick="event.stopPropagation(); openLightbox('${src}')" loading="lazy">`
+          ).join('')
+        }</div>`;
+      }
+      html += `
+        <div class="checklist-item${checked ? ' checked' : ''}" id="arr-wrap-${item.id}">
+          <label class="item-label">
+            <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
+              onchange="toggleArrivalItem('${item.id}', this.checked)">
+            <span class="item-text">${item.text}</span>
+          </label>
+          ${photosHtml}
+        </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+function toggleArrivalItem(itemId, checked) {
+  const s = loadArrivalState();
+  if (checked) s[itemId] = true; else delete s[itemId];
+  saveArrivalState(s);
+  const wrap = document.getElementById('arr-wrap-' + itemId);
+  if (wrap) wrap.classList.toggle('checked', checked);
+}
+
+function resetArrival() {
+  if (confirm('Réinitialiser toutes les cases ?')) {
+    localStorage.removeItem(ARRIVAL_KEY);
+    renderArrival();
+  }
+}
+
+// ============================================================
 //  UTILITAIRES CHECKLIST
 // ============================================================
 function loadCheckState() {
@@ -639,6 +699,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLight
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   initCalendar();
+  renderArrival();
   renderStepIndicators();
   renderStep(0);
 });
