@@ -54,7 +54,6 @@ const CHECKLIST_DATA = [
       { id: "s1i3", text: "Vérifier que les volets sont fermés", photos: [] },
       { id: "s1i4", text: "Éteindre et fermer la bouteille de gaz", photos: [] },
       { id: "s1i5", text: "Débrancher tous les appareils électriques", photos: [] },
-      { id: "s1i6", text: "Éteindre le chauffe-eau", photos: [] }
     ]
   },
   {
