@@ -135,7 +135,7 @@ async function initCalendar() {
     locale: 'fr',
     initialView: window.innerWidth < 600 ? 'listMonth' : 'dayGridMonth',
     headerToolbar: {
-      left:   'prev,next today',
+      left:   'prev,next',
       center: 'title',
       right:  window.innerWidth < 600 ? 'dayGridMonth,listMonth' : 'dayGridMonth,multiMonthYear,listMonth',
     },
