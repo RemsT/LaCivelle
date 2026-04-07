@@ -126,7 +126,8 @@ async function saveEvents(events) {
 //  CALENDRIER FULLCALENDAR
 // ============================================================
 async function initCalendar() {
-  const events = await fetchEvents();
+  let events = [];
+  try { events = await fetchEvents(); } catch(e) { console.warn('Calendrier: impossible de charger les événements', e); }
   state.events = events;
 
   const calendarEl = document.getElementById('fullcalendar');
