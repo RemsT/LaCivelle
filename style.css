@@ -3,6 +3,73 @@
    Thème plage, 100% responsive
    ============================================================ */
 
+/* ---- ÉCRAN DE CONNEXION ---- */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(160deg, #1a6b8a 0%, #134f67 60%, #0d3547 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.login-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 32px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.login-icon { font-size: 3rem; margin-bottom: 8px; }
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1a6b8a;
+  margin: 0 0 4px;
+}
+.login-subtitle {
+  font-size: 0.9rem;
+  color: #7a9cb0;
+  margin: 0 0 28px;
+}
+.pin-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.4rem !important;
+  letter-spacing: 0.3em;
+  text-align: center;
+  border: 2px solid #d0e8f0;
+  border-radius: 12px;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  transition: border-color .2s;
+}
+.pin-input:focus { border-color: #1a6b8a; }
+.pin-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin: 0 0 12px;
+  display: none;
+}
+.pin-btn {
+  width: 100%;
+  padding: 14px;
+  background: #1a6b8a;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background .2s;
+}
+.pin-btn:hover { background: #134f67; }
+
 :root {
   --ocean:       #1a6b8a;
   --ocean-light: #2a9bc4;

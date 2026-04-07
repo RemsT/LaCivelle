@@ -6,6 +6,64 @@
 //
 const FIREBASE_URL = 'https://lacivelle-ab6d3-default-rtdb.europe-west1.firebasedatabase.app';
 
+// ============================================================
+//  PROTECTION PAR MOT DE PASSE
+// ============================================================
+const PASSWORD_HASH = 'c002cb4e72bf197a5265b33ce9b2ebf2c32d8e4194b91b8da4ed682fc5611594';
+const SESSION_KEY   = 'civelle_auth';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function isAuthenticated() {
+  return sessionStorage.getItem(SESSION_KEY) === 'ok';
+}
+
+async function submitPassword() {
+  const input = document.getElementById('pin-input');
+  const error = document.getElementById('pin-error');
+  const hash = await sha256(input.value.trim());
+  if (hash === PASSWORD_HASH) {
+    sessionStorage.setItem(SESSION_KEY, 'ok');
+    document.getElementById('login-screen').remove();
+    document.body.style.overflow = '';
+  } else {
+    error.style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
+function showLoginScreen() {
+  document.body.style.overflow = 'hidden';
+  const screen = document.createElement('div');
+  screen.id = 'login-screen';
+  screen.innerHTML = `
+    <div class="login-box">
+      <div class="login-icon">🏖️</div>
+      <h2 class="login-title">La Civelle</h2>
+      <p class="login-subtitle">Gure Kabanoia</p>
+      <input id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*"
+             placeholder="Code PIN" class="pin-input" autocomplete="off"
+             onkeydown="if(event.key==='Enter') submitPassword()">
+      <p id="pin-error" class="pin-error">Code incorrect, réessaie.</p>
+      <button class="pin-btn" onclick="submitPassword()">Entrer</button>
+    </div>
+  `;
+  document.body.prepend(screen);
+  document.getElementById('pin-input').focus();
+}
+
+if (!isAuthenticated()) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showLoginScreen);
+  } else {
+    showLoginScreen();
+  }
+}
+
 // Personnes avec leur couleur attitrée
 const PEOPLE = [
   { name: 'Christian', color: '#1a6b8a' },
