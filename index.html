@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Civelle — Capbreton</title>
+  <title>Capbreton - La Civelle - Gure Kabanoia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
   <header class="site-header">
     <div class="header-inner">
       <span class="header-icon">🏖️</span>
-      <div>
+      <div class="header-text">
         <h1 class="site-title">La Civelle</h1>
         <p class="site-subtitle">Notre mobil-home à Capbreton</p>
       </div>
@@ -83,8 +83,19 @@
     <div class="modal-content">
       <h3 id="modal-title">🏖️ Nouveau séjour</h3>
       <div class="modal-field">
-        <label for="ev-title">Nom / Famille</label>
-        <input id="ev-title" type="text" placeholder="ex : Christian" autocomplete="off">
+        <label for="person-select">Qui ?</label>
+        <div class="person-select-row">
+          <span id="person-dot" class="person-dot"></span>
+          <select id="person-select" class="person-select-input" onchange="onPersonChange()"></select>
+        </div>
+        <!-- Formulaire "Autre personne" -->
+        <div id="other-form" class="other-form hidden">
+          <input id="other-name" type="text" placeholder="Prénom ou nom" autocomplete="off" class="other-name-input">
+          <div style="margin-top:10px">
+            <label style="font-size:0.82rem;font-weight:700;color:#6b8599;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px">Couleur</label>
+            <div class="color-picker" id="other-color-picker"></div>
+          </div>
+        </div>
       </div>
       <div class="modal-field modal-dates">
         <div>
@@ -95,10 +106,6 @@
           <label for="ev-end">Au</label>
           <input id="ev-end" type="date">
         </div>
-      </div>
-      <div class="modal-field modal-colors">
-        <label>Couleur</label>
-        <div class="color-picker" id="color-picker"></div>
       </div>
       <div class="modal-actions">
         <button class="btn-modal-save" onclick="saveEvent()">Enregistrer</button>
@@ -140,7 +147,6 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/multimonth@6.1.11/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/fr.global.min.js"></script>
-  <script src="config.js"></script>
   <script src="checklist-data.js"></script>
   <script src="app.js"></script>
 </body>

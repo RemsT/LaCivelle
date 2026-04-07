@@ -7,20 +7,35 @@
 //  (Settings → Developer settings → Personal access tokens → Fine-grained)
 //  Permissions requises : Contents → Read and write
 //
-const GITHUB_TOKEN = (window.CONFIG && window.CONFIG.GITHUB_TOKEN) || '';
+// Token GitHub — à remplacer une seule fois ici, tous les appareils l'utilisent automatiquement
+// Créer un Fine-grained token sur github.com/settings/tokens avec :
+//   Repository: LaCivelle — Permission: Contents → Read and write
+const GITHUB_TOKEN = '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';
 const GITHUB_REPO  = 'RemsT/LaCivelle';
 const EVENTS_FILE  = 'events.json';
+function getToken() { return GITHUB_TOKEN; }
 
-// Couleurs disponibles pour les séjours
-const COLORS = [
-  { name: 'Océan',    value: '#1a6b8a' },
-  { name: 'Corail',   value: '#e74c3c' },
-  { name: 'Sable',    value: '#e67e22' },
-  { name: 'Palmier',  value: '#27ae60' },
-  { name: 'Lavande',  value: '#8e44ad' },
-  { name: 'Rose',     value: '#e91e8c' },
-  { name: 'Ardoise',  value: '#2c3e50' },
-  { name: 'Turquoise',value: '#16a085' },
+// Personnes avec leur couleur attitrée
+const PEOPLE = [
+  { name: 'Christian', color: '#1a6b8a' },
+  { name: 'Anne',      color: '#e91e8c' },
+  { name: 'Zoé',       color: '#f39c12' },
+  { name: 'Léna',      color: '#8e44ad' },
+  { name: 'Léo',       color: '#27ae60' },
+  { name: 'Nino',      color: '#e74c3c' },
+  { name: 'Remy',      color: '#2980b9' },
+  { name: 'Lou',       color: '#16a085' },
+  { name: 'Domi',      color: '#d35400' },
+  { name: 'Olivier',   color: '#c0392b' },
+];
+
+// Couleurs réservées aux personnes prédéfinies (non disponibles pour "Autre")
+const RESERVED_COLORS = PEOPLE.map(p => p.color);
+
+// Palette pour "Autre personne" — couleurs non réservées
+const OTHER_COLORS = [
+  '#6c5ce7', '#00b894', '#fd79a8', '#636e72',
+  '#b2bec3', '#55efc4', '#a29bfe', '#fab1a0',
 ];
 
 // ============================================================
@@ -65,7 +80,7 @@ async function fetchEvents() {
   try {
     const res = await fetch(
       `https://api.github.com/repos/${GITHUB_REPO}/contents/${EVENTS_FILE}`,
-      { headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' } }
+      { headers: { Authorization: `token ${getToken()}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
@@ -90,7 +105,7 @@ async function saveEvents(events) {
       {
         method: 'PUT',
         headers: {
-          Authorization: `token ${GITHUB_TOKEN}`,
+          Authorization: `token ${getToken()}`,
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
         },
@@ -180,19 +195,54 @@ function evtToFC(evt) {
 // ============================================================
 //  MODALE AJOUT SÉJOUR
 // ============================================================
-function buildColorPicker() {
-  const container = document.getElementById('color-picker');
+function buildPersonSelect() {
+  const sel = document.getElementById('person-select');
+  sel.innerHTML = '';
+  PEOPLE.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+  const other = document.createElement('option');
+  other.value = '__other__';
+  other.textContent = '+ Autre personne…';
+  sel.appendChild(other);
+}
+
+function onPersonChange() {
+  const sel = document.getElementById('person-select');
+  const val = sel.value;
+  if (val === '__other__') {
+    document.getElementById('other-form').classList.remove('hidden');
+    state.selectedName  = '';
+    state.selectedColor = OTHER_COLORS[0];
+    buildOtherColorPicker();
+    document.getElementById('other-name').focus();
+  } else {
+    document.getElementById('other-form').classList.add('hidden');
+    const person = PEOPLE.find(p => p.name === val);
+    state.selectedName  = person.name;
+    state.selectedColor = person.color;
+    updatePersonDot(person.color);
+  }
+}
+
+function updatePersonDot(color) {
+  document.getElementById('person-dot').style.background = color;
+}
+
+function buildOtherColorPicker() {
+  const container = document.getElementById('other-color-picker');
   container.innerHTML = '';
-  COLORS.forEach(c => {
+  OTHER_COLORS.forEach(c => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'color-swatch' + (c.value === state.selectedColor ? ' selected' : '');
-    btn.style.background = c.value;
-    btn.title = c.name;
-    btn.setAttribute('aria-label', c.name);
+    btn.className = 'color-swatch' + (c === state.selectedColor ? ' selected' : '');
+    btn.style.background = c;
     btn.onclick = () => {
-      state.selectedColor = c.value;
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      state.selectedColor = c;
+      container.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
       btn.classList.add('selected');
     };
     container.appendChild(btn);
@@ -200,14 +250,17 @@ function buildColorPicker() {
 }
 
 function openEventModal(start, end) {
-  document.getElementById('ev-title').value = '';
+  state.selectedName  = PEOPLE[0].name;
+  state.selectedColor = PEOPLE[0].color;
   document.getElementById('ev-start').value = start;
   document.getElementById('ev-end').value   = end;
-  state.selectedColor = COLORS[0].value;
-  buildColorPicker();
+  document.getElementById('other-form').classList.add('hidden');
+  document.getElementById('other-name').value = '';
+  buildPersonSelect();
+  document.getElementById('person-select').value = PEOPLE[0].name;
+  updatePersonDot(PEOPLE[0].color);
   document.getElementById('event-modal').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
-  document.getElementById('ev-title').focus();
 }
 
 function closeEventModal() {
@@ -217,11 +270,17 @@ function closeEventModal() {
 }
 
 async function saveEvent() {
-  const title = document.getElementById('ev-title').value.trim();
+  const otherFormVisible = !document.getElementById('other-form').classList.contains('hidden');
+  let title = state.selectedName;
+  if (otherFormVisible) {
+    title = document.getElementById('other-name').value.trim();
+    if (!title) { document.getElementById('other-name').focus(); return; }
+    state.selectedName = title;
+  }
+  if (!title) return;
+
   const start = document.getElementById('ev-start').value;
   const end   = document.getElementById('ev-end').value;
-
-  if (!title) { document.getElementById('ev-title').focus(); return; }
   if (!start || !end || end < start) {
     alert('Veuillez saisir des dates valides.');
     return;
@@ -242,7 +301,7 @@ async function saveEvent() {
 
   // Sauvegarder en arrière-plan
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur lors de la sauvegarde. Vérifiez le token GitHub dans app.js.');
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
 }
 
 // ============================================================
@@ -282,7 +341,7 @@ async function deleteEvent() {
   closeDetailModal();
 
   const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur lors de la suppression. Vérifiez le token GitHub dans app.js.');
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
 }
 
 // ============================================================
