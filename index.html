@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Civelle — Capbreton</title>
+  <title>Capbreton - La Civelle - Gure Kabanoia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
@@ -83,13 +83,16 @@
     <div class="modal-content">
       <h3 id="modal-title">🏖️ Nouveau séjour</h3>
       <div class="modal-field">
-        <label>Qui ?</label>
-        <div id="person-picker" class="person-picker"></div>
+        <label for="person-select">Qui ?</label>
+        <div class="person-select-row">
+          <span id="person-dot" class="person-dot"></span>
+          <select id="person-select" class="person-select-input" onchange="onPersonChange()"></select>
+        </div>
         <!-- Formulaire "Autre personne" -->
         <div id="other-form" class="other-form hidden">
           <input id="other-name" type="text" placeholder="Prénom ou nom" autocomplete="off" class="other-name-input">
-          <div class="modal-field modal-colors" style="margin-top:10px;margin-bottom:0">
-            <label>Couleur</label>
+          <div style="margin-top:10px">
+            <label style="font-size:0.82rem;font-weight:700;color:#6b8599;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px">Couleur</label>
             <div class="color-picker" id="other-color-picker"></div>
           </div>
         </div>

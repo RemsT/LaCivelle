@@ -195,50 +195,41 @@ function evtToFC(evt) {
 // ============================================================
 //  MODALE AJOUT SÉJOUR
 // ============================================================
-function buildPersonPicker() {
-  const container = document.getElementById('person-picker');
-  container.innerHTML = '';
-
-  // Boutons personnes prédéfinies
+function buildPersonSelect() {
+  const sel = document.getElementById('person-select');
+  sel.innerHTML = '';
   PEOPLE.forEach(p => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'person-btn';
-    btn.style.setProperty('--person-color', p.color);
-    btn.textContent = p.name;
-    btn.onclick = () => selectPerson(p.name, p.color);
-    container.appendChild(btn);
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
   });
-
-  // Bouton "Autre"
-  const other = document.createElement('button');
-  other.type = 'button';
-  other.className = 'person-btn person-btn-other';
-  other.textContent = '+ Autre';
-  other.onclick = () => showOtherForm();
-  container.appendChild(other);
+  const other = document.createElement('option');
+  other.value = '__other__';
+  other.textContent = '+ Autre personne…';
+  sel.appendChild(other);
 }
 
-function selectPerson(name, color) {
-  state.selectedColor = color;
-  state.selectedName  = name;
-  // Mettre en surbrillance le bouton sélectionné
-  document.querySelectorAll('.person-btn').forEach(b => b.classList.remove('selected'));
-  const btns = document.querySelectorAll('.person-btn');
-  btns.forEach(b => { if (b.textContent === name) b.classList.add('selected'); });
-  // Cacher le formulaire "autre"
-  document.getElementById('other-form').classList.add('hidden');
+function onPersonChange() {
+  const sel = document.getElementById('person-select');
+  const val = sel.value;
+  if (val === '__other__') {
+    document.getElementById('other-form').classList.remove('hidden');
+    state.selectedName  = '';
+    state.selectedColor = OTHER_COLORS[0];
+    buildOtherColorPicker();
+    document.getElementById('other-name').focus();
+  } else {
+    document.getElementById('other-form').classList.add('hidden');
+    const person = PEOPLE.find(p => p.name === val);
+    state.selectedName  = person.name;
+    state.selectedColor = person.color;
+    updatePersonDot(person.color);
+  }
 }
 
-function showOtherForm() {
-  document.querySelectorAll('.person-btn').forEach(b => b.classList.remove('selected'));
-  document.querySelector('.person-btn-other').classList.add('selected');
-  state.selectedName  = '';
-  state.selectedColor = OTHER_COLORS[0];
-  document.getElementById('other-form').classList.remove('hidden');
-  document.getElementById('other-name').value = '';
-  buildOtherColorPicker();
-  document.getElementById('other-name').focus();
+function updatePersonDot(color) {
+  document.getElementById('person-dot').style.background = color;
 }
 
 function buildOtherColorPicker() {
@@ -264,12 +255,10 @@ function openEventModal(start, end) {
   document.getElementById('ev-start').value = start;
   document.getElementById('ev-end').value   = end;
   document.getElementById('other-form').classList.add('hidden');
-  buildPersonPicker();
-  // Pré-sélectionner la première personne
-  setTimeout(() => {
-    const first = document.querySelector('.person-btn');
-    if (first) first.classList.add('selected');
-  }, 0);
+  document.getElementById('other-name').value = '';
+  buildPersonSelect();
+  document.getElementById('person-select').value = PEOPLE[0].name;
+  updatePersonDot(PEOPLE[0].color);
   document.getElementById('event-modal').classList.remove('hidden');
   document.getElementById('modal-overlay').classList.remove('hidden');
 }
@@ -312,7 +301,7 @@ async function saveEvent() {
 
   // Sauvegarder en arrière-plan
   const ok = await saveEvents(state.events);
-  if (!ok) openTokenModal();
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
 }
 
 // ============================================================
@@ -352,7 +341,7 @@ async function deleteEvent() {
   closeDetailModal();
 
   const ok = await saveEvents(state.events);
-  if (!ok) openTokenModal();
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez que le token GitHub est valide (repository: LaCivelle, permission: Contents read/write).');
 }
 
 // ============================================================
