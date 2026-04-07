@@ -145,20 +145,28 @@ async function fetchEvents() {
   }
 }
 
-async function saveEvents(events) {
+async function saveOneEvent(evt) {
   try {
-    // Convertir le tableau en objet keyed par id pour Firebase
-    const obj = {};
-    events.forEach(e => { obj[e.id] = e; });
-    const res = await fetch(`${FIREBASE_URL}/events.json`, {
+    const res = await fetch(`${FIREBASE_URL}/events/${evt.id}.json`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(obj),
+      body: JSON.stringify(evt),
     });
     if (!res.ok) throw new Error(res.status);
     return true;
   } catch (e) {
-    console.error('saveEvents:', e);
+    console.error('saveOneEvent:', e);
+    return false;
+  }
+}
+
+async function deleteOneEvent(id) {
+  try {
+    const res = await fetch(`${FIREBASE_URL}/events/${id}.json`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(res.status);
+    return true;
+  } catch (e) {
+    console.error('deleteOneEvent:', e);
     return false;
   }
 }
@@ -223,15 +231,17 @@ async function initCalendar() {
 }
 
 // Convertit un event stocké en objet FullCalendar
+// La date de fin stockée est inclusive → on ajoute 1 jour (FullCalendar end est exclusif)
 function evtToFC(evt) {
-  // End est exclusif dans FullCalendar dayGrid
-  const endDate = new Date(evt.end + 'T00:00:00');
-  endDate.setDate(endDate.getDate() + 1);
+  const [y, m, d] = evt.end.split('-').map(Number);
+  const endExclusive = new Date(y, m - 1, d + 1); // Date locale, pas UTC
+  const pad = n => String(n).padStart(2, '0');
+  const endStr = `${endExclusive.getFullYear()}-${pad(endExclusive.getMonth()+1)}-${pad(endExclusive.getDate())}`;
   return {
     id:              evt.id,
     title:           evt.title,
     start:           evt.start,
-    end:             endDate.toISOString().slice(0, 10),
+    end:             endStr,
     backgroundColor: evt.color,
     borderColor:     evt.color,
     textColor:       '#ffffff',
@@ -366,7 +376,7 @@ async function saveEvent() {
   closeEventModal();
 
   // Sauvegarder en arrière-plan
-  const ok = await saveEvents(state.events);
+  const ok = await saveOneEvent(newEvt);
   if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
@@ -491,20 +501,21 @@ async function updateEvent() {
   }
 
   closeDetailModal();
-  const ok = await saveEvents(state.events);
+  const ok = await saveOneEvent(state.events[idx]);
   if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
 async function deleteEvent() {
   if (!confirm('Supprimer ce séjour ?')) return;
 
-  const fcEvt = state.calendar.getEventById(state.currentEventId);
+  const idToDelete = state.currentEventId;
+  const fcEvt = state.calendar.getEventById(idToDelete);
   if (fcEvt) fcEvt.remove();
-  state.events = state.events.filter(e => e.id !== state.currentEventId);
+  state.events = state.events.filter(e => e.id !== idToDelete);
   closeDetailModal();
 
-  const ok = await saveEvents(state.events);
-  if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
+  const ok = await deleteOneEvent(idToDelete);
+  if (!ok) alert('Erreur de suppression. Vérifiez votre connexion internet.');
 }
 
 // ============================================================
