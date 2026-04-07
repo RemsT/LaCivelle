@@ -206,7 +206,7 @@ async function initCalendar() {
 
     // Sélection d'une plage (desktop drag) → ouvre modale avec la plage
     select(info) {
-      const endDate = new Date(info.endStr);
+      const endDate = new Date(info.endStr + 'T00:00:00');
       endDate.setDate(endDate.getDate() - 1);
       openEventModal(info.startStr, endDate.toISOString().slice(0, 10));
     },
