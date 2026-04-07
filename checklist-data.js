@@ -8,7 +8,10 @@ const ARRIVAL_DATA = [
     id: "arr1",
     title: "💧 Eau",
     items: [
-      { id: "a1i1", text: "Ouvrir l'arrivée d'eau générale", photos: [] }
+      { id: "a1i1", text: "Localiser le robinet d'arrivée d'eau générale (sous le mobile home ou au niveau du compteur)", photos: [] },
+      { id: "a1i2", text: "Ouvrir le robinet d'arrivée d'eau générale", photos: [] },
+      { id: "a1i3", text: "Vérifier qu'il n'y a pas de fuite visible sous l'évier ou dans la salle de bain", photos: [] },
+      { id: "a1i4", text: "Laisser couler l'eau quelques secondes pour purger les tuyaux", photos: [] }
     ]
   },
   {
