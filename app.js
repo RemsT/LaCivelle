@@ -9,7 +9,7 @@ const FIREBASE_URL = 'https://lacivelle-ab6d3-default-rtdb.europe-west1.firebase
 // ============================================================
 //  PROTECTION PAR MOT DE PASSE
 // ============================================================
-const PASSWORD_HASH = 'c002cb4e72bf197a5265b33ce9b2ebf2c32d8e4194b91b8da4ed682fc5611594';
+const PASSWORD_HASH = 'ab20c7b19c30cd40bbdffb2d85f206c0488c8db10ead1a7028da03e25b799795';
 const SESSION_KEY   = 'civelle_auth';
 
 async function sha256(str) {
