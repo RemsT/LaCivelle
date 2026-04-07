@@ -346,38 +346,49 @@ function closeEventModal() {
 }
 
 async function saveEvent() {
-  const otherFormVisible = !document.getElementById('other-form').classList.contains('hidden');
-  let title = state.selectedName;
-  if (otherFormVisible) {
-    title = document.getElementById('other-name').value.trim();
-    if (!title) { document.getElementById('other-name').focus(); return; }
-    state.selectedName = title;
+  try {
+    const otherFormVisible = !document.getElementById('other-form').classList.contains('hidden');
+    let title = state.selectedName;
+    if (otherFormVisible) {
+      title = document.getElementById('other-name').value.trim();
+      if (!title) { document.getElementById('other-name').focus(); return; }
+      state.selectedName = title;
+    }
+    if (!title) {
+      alert('Veuillez choisir une personne.');
+      return;
+    }
+
+    const start = document.getElementById('ev-start').value;
+    const end   = document.getElementById('ev-end').value;
+    if (!start || !end || end < start) {
+      alert('Veuillez saisir des dates valides.');
+      return;
+    }
+
+    const newEvt = {
+      id:    Date.now().toString(),
+      title,
+      start,
+      end,
+      color: state.selectedColor || PEOPLE[0].color,
+    };
+
+    // Sauvegarder d'abord dans Firebase
+    const ok = await saveOneEvent(newEvt);
+    if (!ok) {
+      alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
+      return;
+    }
+
+    // Puis afficher dans le calendrier
+    state.events.push(newEvt);
+    state.calendar.addEvent(evtToFC(newEvt));
+    closeEventModal();
+  } catch(e) {
+    console.error('saveEvent error:', e);
+    alert('Erreur inattendue : ' + e.message);
   }
-  if (!title) return;
-
-  const start = document.getElementById('ev-start').value;
-  const end   = document.getElementById('ev-end').value;
-  if (!start || !end || end < start) {
-    alert('Veuillez saisir des dates valides.');
-    return;
-  }
-
-  const newEvt = {
-    id:    Date.now().toString(),
-    title,
-    start,
-    end,
-    color: state.selectedColor,
-  };
-
-  // Afficher immédiatement dans le calendrier
-  state.calendar.addEvent(evtToFC(newEvt));
-  state.events.push(newEvt);
-  closeEventModal();
-
-  // Sauvegarder en arrière-plan
-  const ok = await saveOneEvent(newEvt);
-  if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
 // ============================================================
