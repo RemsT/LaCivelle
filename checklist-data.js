@@ -2,6 +2,48 @@
 // Pour ajouter une photo : copier le fichier dans photos/ et ajouter le chemin ici
 // Exemple : photos: ["photos/fenetre-salon.jpg", "photos/fenetre-chambre.jpg"]
 
+// ---- Checklist d'ARRIVÉE ----
+const ARRIVAL_DATA = [
+  {
+    id: "arr1",
+    title: "💧 Eau",
+    items: [
+      { id: "a1i1", text: "Localiser le robinet d'arrivée d'eau générale (sous le mobile home ou au niveau du compteur)", photos: [] },
+      { id: "a1i2", text: "Ouvrir le robinet d'arrivée d'eau générale", photos: [] },
+      { id: "a1i3", text: "Vérifier qu'il n'y a pas de fuite visible sous l'évier ou dans la salle de bain", photos: [] },
+      { id: "a1i4", text: "Laisser couler l'eau quelques secondes pour purger les tuyaux", photos: [] }
+    ]
+  },
+  {
+    id: "arr2",
+    title: "🔥 Gaz",
+    items: [
+      { id: "a2i1", text: "Récupérer la petite clé du coffre", photos: [] },
+      { id: "a2i2", text: "Ouvrir le cadenas du coffre à bouteilles (derrière le mobile home)", photos: [] },
+      { id: "a2i3", text: "Ouvrir les bouteilles de gaz à fond (sens horaire)", photos: [] },
+      { id: "a2i4", text: "Vérifier que la bouteille raccordée est bien ouverte", photos: [] }
+    ]
+  },
+  {
+    id: "arr3",
+    title: "⚡ Électricité",
+    items: [
+      { id: "a3i1", text: "Enclencher le disjoncteur général", photos: [] },
+      { id: "a3i2", text: "Vérifier que la porte du frigo est bien fermée", photos: [] },
+      { id: "a3i3", text: "Allumer les appareils nécessaires", photos: [] }
+    ]
+  },
+  {
+    id: "arr4",
+    title: "🚿 Chauffe-eau",
+    items: [
+      { id: "a4i1", text: "⚠️ NE PAS TOUCHER aux boutons du chauffe-eau", photos: [] },
+      { id: "a4i2", text: "Attendre que l'eau chauffe (cela prend du temps, c'est normal)", photos: [] },
+      { id: "a4i3", text: "Si l'eau devient trop chaude puis froide → remettre à zéro et recommencer", photos: [] }
+    ]
+  }
+];
+
 const CHECKLIST_DATA = [
   {
     id: "sec1",

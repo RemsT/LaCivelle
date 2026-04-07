@@ -35,9 +35,14 @@
       📅 Séjours
     </button>
     <button class="tab-btn" role="tab" aria-selected="false"
+            aria-controls="panel-arrival" id="tab-arrival"
+            onclick="switchTab('arrival')">
+      🏠 Arrivée
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false"
             aria-controls="panel-checkout" id="tab-checkout"
             onclick="switchTab('checkout')">
-      ✅ Check-out
+      ✅ Départ
     </button>
   </nav>
 
@@ -47,6 +52,14 @@
     <div id="panel-calendar" class="tab-panel active" role="tabpanel" aria-labelledby="tab-calendar">
       <p class="calendar-tip">Appuyez sur un jour ou sur + pour ajouter un séjour</p>
       <div id="fullcalendar"></div>
+    </div>
+
+    <!-- ======= ONGLET ARRIVÉE ======= -->
+    <div id="panel-arrival" class="tab-panel" role="tabpanel" aria-labelledby="tab-arrival">
+      <div id="arrival-content" class="arrival-content"></div>
+      <div class="reset-area">
+        <button class="btn-reset" onclick="resetArrival()">🔄 Tout réinitialiser</button>
+      </div>
     </div>
 
     <!-- ======= ONGLET CHECK-OUT ======= -->
