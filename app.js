@@ -171,7 +171,7 @@ async function initCalendar() {
   const calendarEl = document.getElementById('fullcalendar');
   const cal = new FullCalendar.Calendar(calendarEl, {
     locale: 'fr',
-    initialView: window.innerWidth < 600 ? 'listMonth' : 'dayGridMonth',
+    initialView: 'dayGridMonth',
     headerToolbar: {
       left:   'prev,next',
       center: 'title',
