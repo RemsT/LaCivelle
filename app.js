@@ -49,7 +49,7 @@ const state = {
   eventsSha:      null,   // SHA du fichier events.json sur GitHub
   pendingStart:   null,
   pendingEnd:     null,
-  selectedColor:  COLORS[0].value,
+  selectedColor:  PEOPLE[0].color,
   currentEventId: null,
 };
 
