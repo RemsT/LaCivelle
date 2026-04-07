@@ -282,31 +282,126 @@ async function saveEvent() {
 }
 
 // ============================================================
-//  MODALE DÉTAIL / SUPPRESSION
+//  MODALE DÉTAIL / ÉDITION / SUPPRESSION
 // ============================================================
 function openDetailModal(fcEvent) {
-  document.getElementById('detail-title').textContent = fcEvent.title;
-
-  const start = new Date(fcEvent.startStr + 'T12:00:00');
-  // Recalculer la vraie fin (end FullCalendar est exclusif)
   const storedEvt = state.events.find(e => e.id === fcEvent.id);
-  const endStr    = storedEvt ? storedEvt.end : fcEvent.startStr;
-  const end       = new Date(endStr + 'T12:00:00');
+  if (!storedEvt) return;
 
-  const fmt = d => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-  document.getElementById('detail-dates').textContent =
-    start.toDateString() === end.toDateString()
-      ? fmt(start)
-      : `${fmt(start)} → ${fmt(end)}`;
+  // Pré-remplir le formulaire d'édition
+  state.selectedColor = storedEvt.color;
+  state.selectedName  = storedEvt.title;
+
+  document.getElementById('edit-start').value = storedEvt.start;
+  document.getElementById('edit-end').value   = storedEvt.end;
+
+  // Construire le sélecteur de personne
+  buildEditPersonSelect(storedEvt.title, storedEvt.color);
 
   document.getElementById('detail-modal').classList.remove('hidden');
   document.getElementById('detail-overlay').classList.remove('hidden');
+}
+
+function buildEditPersonSelect(currentName, currentColor) {
+  const sel = document.getElementById('edit-person-select');
+  sel.innerHTML = '';
+  PEOPLE.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+  const other = document.createElement('option');
+  other.value = '__other__';
+  other.textContent = '+ Autre personne…';
+  sel.appendChild(other);
+
+  const isPerson = PEOPLE.find(p => p.name === currentName);
+  if (isPerson) {
+    sel.value = currentName;
+    document.getElementById('edit-person-dot').style.background = currentColor;
+    document.getElementById('edit-other-form').classList.add('hidden');
+  } else {
+    sel.value = '__other__';
+    document.getElementById('edit-person-dot').style.background = currentColor;
+    document.getElementById('edit-other-name').value = currentName;
+    document.getElementById('edit-other-form').classList.remove('hidden');
+    buildEditOtherColorPicker(currentColor);
+  }
+}
+
+function onEditPersonChange() {
+  const val = document.getElementById('edit-person-select').value;
+  if (val === '__other__') {
+    document.getElementById('edit-other-form').classList.remove('hidden');
+    state.selectedColor = OTHER_COLORS[0];
+    state.selectedName  = '';
+    buildEditOtherColorPicker(state.selectedColor);
+    document.getElementById('edit-other-name').focus();
+  } else {
+    document.getElementById('edit-other-form').classList.add('hidden');
+    const person = PEOPLE.find(p => p.name === val);
+    state.selectedColor = person.color;
+    state.selectedName  = person.name;
+    document.getElementById('edit-person-dot').style.background = person.color;
+  }
+}
+
+function buildEditOtherColorPicker(selected) {
+  const container = document.getElementById('edit-other-color-picker');
+  container.innerHTML = '';
+  OTHER_COLORS.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'color-swatch' + (c === selected ? ' selected' : '');
+    btn.style.background = c;
+    btn.onclick = () => {
+      state.selectedColor = c;
+      document.getElementById('edit-person-dot').style.background = c;
+      container.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+    container.appendChild(btn);
+  });
 }
 
 function closeDetailModal() {
   document.getElementById('detail-modal').classList.add('hidden');
   document.getElementById('detail-overlay').classList.add('hidden');
   state.currentEventId = null;
+}
+
+async function updateEvent() {
+  const otherVisible = !document.getElementById('edit-other-form').classList.contains('hidden');
+  let title = state.selectedName;
+  if (otherVisible) {
+    title = document.getElementById('edit-other-name').value.trim();
+    if (!title) { document.getElementById('edit-other-name').focus(); return; }
+  }
+  const start = document.getElementById('edit-start').value;
+  const end   = document.getElementById('edit-end').value;
+  if (!start || !end || end < start) { alert('Dates invalides.'); return; }
+
+  const idx = state.events.findIndex(e => e.id === state.currentEventId);
+  if (idx === -1) return;
+
+  state.events[idx] = { ...state.events[idx], title, start, end, color: state.selectedColor };
+
+  // Mettre à jour FullCalendar sans recharger
+  const fcEvt = state.calendar.getEventById(state.currentEventId);
+  if (fcEvt) {
+    fcEvt.setProp('title', title);
+    fcEvt.setProp('backgroundColor', state.selectedColor);
+    fcEvt.setProp('borderColor', state.selectedColor);
+    const endDate = new Date(end + 'T00:00:00');
+    endDate.setDate(endDate.getDate() + 1);
+    fcEvt.setStart(start);
+    fcEvt.setEnd(endDate.toISOString().slice(0, 10));
+  }
+
+  closeDetailModal();
+  const ok = await saveEvents(state.events);
+  if (!ok) alert('Erreur de sauvegarde. Vérifiez votre connexion internet.');
 }
 
 async function deleteEvent() {

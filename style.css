@@ -336,8 +336,9 @@ img { max-width: 100%; display: block; }
 /* Boutons modale */
 .modal-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 .btn-modal-save {
   flex: 1;
