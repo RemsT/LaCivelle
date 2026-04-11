@@ -93,6 +93,7 @@ const OTHER_COLORS = [
 const STORAGE_KEY = 'civelle_checklist_v1';
 const state = {
   currentStep:    0,
+  arrivalStep:    0,
   calendar:       null,
   events:         [],
   pendingStart:   null,
@@ -121,7 +122,7 @@ function switchTab(name) {
   if (fab) fab.style.display = name === 'calendar' ? 'flex' : 'none';
 
   // Re-render la checklist arrivée si on revient sur cet onglet
-  if (name === 'arrival') renderArrival();
+  if (name === 'arrival') renderArrivalStep(state.arrivalStep ?? 0);
 
   // Re-render le calendrier quand on revient sur cet onglet
   if (name === 'calendar' && state.calendar) {
@@ -603,24 +604,55 @@ function updateArrivalProgressBar() {
   const total = ARRIVAL_DATA.reduce((n, s) => n + s.items.length, 0);
   const done  = Object.keys(checkState).filter(k => checkState[k]).length;
   const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  const cur   = state.arrivalStep;
   const fill  = document.getElementById('arrival-progress-fill');
   const label = document.getElementById('arrival-progress-label');
-  if (fill)  fill.style.width = pct + '%';
-  if (label) label.textContent = `${done} / ${total} tâches`;
+  const stepLabel = document.getElementById('arrival-progress-step-label');
+  if (fill)      fill.style.width = pct + '%';
+  if (label)     label.textContent = `${done} / ${total} tâches`;
+  if (stepLabel) stepLabel.textContent = `Étape ${cur + 1} / ${ARRIVAL_DATA.length} — ${ARRIVAL_DATA[cur].title}`;
+  document.querySelectorAll('.arrival-step-dot').forEach((dot, i) => {
+    dot.classList.remove('active', 'done');
+    const s = loadArrivalState();
+    if (i === cur) dot.classList.add('active');
+    else if (ARRIVAL_DATA[i].items.every(it => s[it.id])) dot.classList.add('done');
+  });
 }
 
-function renderArrival() {
+function renderArrivalStepIndicators() {
+  const container = document.getElementById('arrival-step-indicators');
+  container.innerHTML = '';
+  ARRIVAL_DATA.forEach((sec, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'step-dot arrival-step-dot';
+    btn.setAttribute('aria-label', `Aller à : ${sec.title}`);
+    btn.textContent = i + 1;
+    btn.onclick = () => renderArrivalStep(i);
+    container.appendChild(btn);
+  });
+}
+
+function renderArrivalStep(idx) {
+  state.arrivalStep = idx;
+  const sec        = ARRIVAL_DATA[idx];
   const checkState = loadArrivalState();
-  const container  = document.getElementById('arrival-content');
-  let html = '';
-  ARRIVAL_DATA.forEach(sec => {
-    html += `<h2 class="step-title">${sec.title}</h2>`;
-    sec.items.forEach(item => {
-      html += buildItemHtml(item, !!checkState[item.id], 'toggleArrivalItem', 'arr-wrap');
-    });
+  const container  = document.getElementById('arrival-step-content');
+
+  let html = `<h2 class="step-title">${sec.title}</h2>`;
+  sec.items.forEach(item => {
+    html += buildItemHtml(item, !!checkState[item.id], 'toggleArrivalItem', 'arr-wrap');
   });
   container.innerHTML = html;
+
+  const isFirst = idx === 0;
+  const isLast  = idx === ARRIVAL_DATA.length - 1;
+  document.getElementById('arrival-btn-prev').disabled = isFirst;
+  const btnNext = document.getElementById('arrival-btn-next');
+  btnNext.textContent = isLast ? '✅ Terminer' : 'Suivant →';
+  btnNext.classList.toggle('btn-finish', isLast);
+
   updateArrivalProgressBar();
+  document.getElementById('panel-arrival').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function toggleArrivalItem(itemId, checked) {
@@ -632,10 +664,22 @@ function toggleArrivalItem(itemId, checked) {
   updateArrivalProgressBar();
 }
 
+function goArrivalNext() {
+  if (state.arrivalStep < ARRIVAL_DATA.length - 1) {
+    renderArrivalStep(state.arrivalStep + 1);
+  } else {
+    document.getElementById('arrival-finish-screen').classList.remove('hidden');
+  }
+}
+function goArrivalPrev() {
+  if (state.arrivalStep > 0) renderArrivalStep(state.arrivalStep - 1);
+}
+
 function resetArrival() {
   if (confirm('Réinitialiser toutes les cases ?')) {
     localStorage.removeItem(ARRIVAL_KEY);
-    renderArrival();
+    document.getElementById('arrival-finish-screen').classList.add('hidden');
+    renderArrivalStep(0);
   }
 }
 
@@ -756,7 +800,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLight
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   initCalendar();
-  renderArrival();
+  renderArrivalStepIndicators();
+  renderArrivalStep(0);
   renderStepIndicators();
   renderStep(0);
 });

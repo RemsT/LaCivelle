@@ -62,10 +62,26 @@
         </div>
         <div class="progress-meta">
           <span class="progress-label" id="arrival-progress-label">0 / 0 tâches</span>
+          <span class="progress-step-label" id="arrival-progress-step-label">Étape 1 / 5</span>
         </div>
+        <div class="step-indicators" id="arrival-step-indicators" role="navigation" aria-label="Étapes"></div>
       </div>
 
-      <div id="arrival-content" class="arrival-content"></div>
+      <div id="arrival-step-content" class="step-content"></div>
+
+      <div class="nav-buttons">
+        <button class="btn-nav btn-prev" id="arrival-btn-prev" onclick="goArrivalPrev()">← Précédent</button>
+        <button class="btn-nav btn-next" id="arrival-btn-next" onclick="goArrivalNext()">Suivant →</button>
+      </div>
+
+      <div id="arrival-finish-screen" class="finish-screen hidden">
+        <div class="finish-inner">
+          <div class="finish-emoji">🏠</div>
+          <h2>Bienvenue !</h2>
+          <p>Tout est prêt pour votre séjour.</p>
+          <button class="btn-modal-save" onclick="resetArrival()">Recommencer</button>
+        </div>
+      </div>
 
       <div class="reset-area">
         <button class="btn-reset" onclick="resetArrival()">🔄 Tout réinitialiser</button>
