@@ -65,10 +65,11 @@ const CHECKLIST_DATA = [
       { id: "s1i2", text: "Nettoyer les plans de travail et l'évier", photos: [] },
       { id: "s1i3", text: "Nettoyer les plaques de cuisson", photos: [] },
       { id: "s1i4", text: "Vider et nettoyer le réfrigérateur", photos: [] },
-      { id: "s1i5", text: "Vider les poubelles et sortir les sacs", photos: [] },
-      { id: "s1i6", text: "Passer le balai ou l'aspirateur", photos: [] },
-      { id: "s1i7", text: "Nettoyer la salle de bain et les toilettes", photos: [] },
-      { id: "s1i8", text: "Changer ou laver les draps et serviettes", photos: [] }
+      { id: "s1i5", text: "laisser entre ouvert le réfrigérateur", photos: [] },
+      { id: "s1i6", text: "Vider les poubelles et sortir les sacs", photos: [] },
+      { id: "s1i7", text: "Passer le balai ou l'aspirateur", photos: [] },
+      { id: "s1i8", text: "Nettoyer la salle de bain et les toilettes", photos: [] },
+      { id: "s1i9", text: "Changer ou laver les draps et serviettes", photos: [] }
     ]
   },
   {
@@ -87,13 +88,11 @@ const CHECKLIST_DATA = [
     id: "sec3",
     title: "Équipements extérieurs",
     items: [
-      { id: "s3i1", text: "Ranger les chaises et la table de jardin", photos: [] },
-      { id: "s3i2", text: "Mettre la table et le vélo sous la bâche", photos: [] },
+      { id: "s3i1", text: "Mettre la table et le vélo sous la bâche", photos: [] },
       { id: "s3i3", text: "Ranger les jeux et jouets de plage", photos: [] },
-      { id: "s3i4", text: "Rentrer la chaise verte à l'intérieur", photos: [] },
-      { id: "s3i5", text: "Ranger le transat sous le lit", photos: [] },
-      { id: "s3i6", text: "Mettre les vélos pliables à l'intérieur", photos: [] },
-
+      { id: "s3i4", text: "Rentrer les chaises vertes à l'intérieur", photos: [] },
+      { id: "s3i5", text: "Ranger les transats sous le lit", photos: [] },
+      { id: "s3i6", text: "Mettre les vélos pliables à l'intérieur", photos: [] }
     ]
   },
   {
