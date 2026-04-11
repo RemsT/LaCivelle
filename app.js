@@ -668,6 +668,12 @@ function goArrivalNext() {
   if (state.arrivalStep < ARRIVAL_DATA.length - 1) {
     renderArrivalStep(state.arrivalStep + 1);
   } else {
+    const s = loadArrivalState();
+    const total = ARRIVAL_DATA.reduce((n, sec) => n + sec.items.length, 0);
+    const done  = Object.keys(s).filter(k => s[k]).length;
+    if (done < total) {
+      if (!confirm(`Attention : ${total - done} tâche(s) non cochée(s). Terminer quand même ?`)) return;
+    }
     document.getElementById('arrival-finish-screen').classList.remove('hidden');
   }
 }
@@ -766,6 +772,11 @@ function goNext() {
   if (state.currentStep < CHECKLIST_DATA.length - 1) {
     renderStep(state.currentStep + 1);
   } else {
+    const total = totalItems();
+    const done  = doneItems();
+    if (done < total) {
+      if (!confirm(`Attention : ${total - done} tâche(s) non cochée(s). Terminer quand même ?`)) return;
+    }
     document.getElementById('finish-screen').classList.remove('hidden');
   }
 }
