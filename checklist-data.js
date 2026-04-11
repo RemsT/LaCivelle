@@ -6,7 +6,7 @@
 const ARRIVAL_DATA = [
   {
     id: "arr1",
-    title: "💧 Eau",
+    title: "Eau",
     items: [
       { id: "a1i1", text: "Localiser le robinet d'arrivée d'eau générale (sous le mobile home ou au niveau du compteur)", photos: [] },
       { id: "a1i2", text: "Ouvrir le robinet d'arrivée d'eau générale", photos: [] },
@@ -16,7 +16,7 @@ const ARRIVAL_DATA = [
   },
   {
     id: "arr2",
-    title: "🔥 Gaz",
+    title: "Gaz",
     items: [
       { id: "a2i1", text: "Récupérer la petite clé du coffre", photos: [] },
       { id: "a2i2", text: "Ouvrir le cadenas du coffre à bouteilles (derrière le mobile home)", photos: [] },
@@ -26,7 +26,7 @@ const ARRIVAL_DATA = [
   },
   {
     id: "arr3",
-    title: "⚡ Électricité",
+    title: "Électricité",
     items: [
       { id: "a3i1", text: "Enclencher le disjoncteur général", photos: [] },
       { id: "a3i2", text: "Vérifier que la porte du frigo est bien fermée", photos: [] },
@@ -35,7 +35,7 @@ const ARRIVAL_DATA = [
   },
   {
     id: "arr4",
-    title: "🚿 Chauffe-eau",
+    title: "Chauffe-eau",
     items: [
       { id: "a4i1", text: "⚠️ NE PAS TOUCHER aux boutons du chauffe-eau", photos: [] },
       { id: "a4i2", text: "Attendre que l'eau chauffe (cela prend du temps, c'est normal)", photos: [] },
@@ -47,7 +47,7 @@ const ARRIVAL_DATA = [
 const CHECKLIST_DATA = [
   {
     id: "sec1",
-    title: "🔒 Sécurité et fermeture",
+    title: "Sécurité et fermeture",
     items: [
       { id: "s1i1", text: "Fermer et verrouiller toutes les fenêtres", photos: [] },
       { id: "s1i2", text: "Fermer et verrouiller la porte d'entrée", photos: [] },
@@ -58,7 +58,7 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec2",
-    title: "🧹 Nettoyage intérieur",
+    title: "Nettoyage intérieur",
     items: [
       { id: "s2i1", text: "Faire la vaisselle et tout ranger", photos: [] },
       { id: "s2i2", text: "Nettoyer les plans de travail et l'évier", photos: [] },
@@ -72,7 +72,7 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec3",
-    title: "🌊 Équipements extérieurs",
+    title: "Équipements extérieurs",
     items: [
       { id: "s3i1", text: "Ranger les chaises et la table de jardin", photos: [] },
       { id: "s3i2", text: "Rentrer ou attacher le parasol", photos: [] },
@@ -82,7 +82,7 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec4",
-    title: "❄️ Cuisine et alimentation",
+    title: "Cuisine et alimentation",
     items: [
       { id: "s4i1", text: "Vider les restes alimentaires périssables", photos: [] },
       { id: "s4i2", text: "Vider et débrancher le réfrigérateur si absence longue", photos: [] },
@@ -92,7 +92,7 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec5",
-    title: "💧 Eau et énergie",
+    title: "Eau et énergie",
     items: [
       { id: "s5i1", text: "Couper l'arrivée d'eau générale", photos: [] },
       { id: "s5i2", text: "Vérifier que tous les robinets sont fermés", photos: [] },
@@ -101,7 +101,7 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec6",
-    title: "📋 Dernières vérifications",
+    title: "Dernières vérifications",
     items: [
       { id: "s6i1", text: "Prendre tous les effets personnels (médicaments, chargeurs…)", photos: [] },
       { id: "s6i2", text: "Vérifier que les clés sont bien avec vous", photos: [] },
