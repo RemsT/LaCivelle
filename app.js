@@ -579,7 +579,7 @@ function renderArrival() {
         <div class="checklist-item${checked ? ' checked' : ''}" id="arr-wrap-${item.id}">
           <label class="item-label">
             <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
-              onchange="toggleArrivalItem('${item.id}', this.checked)">
+              onclick="toggleArrivalItem('${item.id}', this.checked)">
             <span class="item-text">${item.text}</span>
           </label>
           ${photosHtml}
@@ -675,7 +675,7 @@ function renderStep(idx) {
       <div class="checklist-item${checked ? ' checked' : ''}" id="item-wrap-${item.id}">
         <label class="item-label">
           <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
-            onchange="toggleItem('${item.id}', this.checked)">
+            onclick="toggleItem('${item.id}', this.checked)">
           <span class="item-text">${item.text}</span>
         </label>
         ${photosHtml}
