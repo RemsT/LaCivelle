@@ -707,7 +707,7 @@ function updateProgressBar() {
   const cur = state.currentStep;
   document.getElementById('progress-step-label').textContent =
     `Étape ${cur + 1} / ${CHECKLIST_DATA.length} — ${CHECKLIST_DATA[cur].title}`;
-  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+  document.querySelectorAll('#step-indicators .step-dot').forEach((dot, i) => {
     dot.classList.remove('active', 'done');
     if (i === cur)           dot.classList.add('active');
     else if (isStepDone(i)) dot.classList.add('done');
