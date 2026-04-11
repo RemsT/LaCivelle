@@ -52,8 +52,9 @@ const CHECKLIST_DATA = [
       { id: "s1i1", text: "Fermer et verrouiller toutes les fenêtres", photos: [] },
       { id: "s1i2", text: "Fermer et verrouiller la porte d'entrée", photos: [] },
       { id: "s1i3", text: "Vérifier que les volets sont fermés", photos: [] },
-      { id: "s1i4", text: "Éteindre et fermer la bouteille de gaz", photos: [] },
+      { id: "s1i4", text: "Fermer les bouteilles de gaz (petite clé du trousseau du mobile home) et verrouiller le coffre", photos: [] },
       { id: "s1i5", text: "Débrancher tous les appareils électriques", photos: [] },
+      { id: "s1i6", text: "Éteindre la climatisation", photos: [] },
     ]
   },
   {
@@ -96,7 +97,7 @@ const CHECKLIST_DATA = [
     items: [
       { id: "s5i1", text: "Couper l'arrivée d'eau générale", photos: [] },
       { id: "s5i2", text: "Vérifier que tous les robinets sont fermés", photos: [] },
-      { id: "s5i3", text: "Éteindre le tableau électrique si départ prolongé", photos: [] }
+      { id: "s5i3", text: "Couper le disjoncteur général (dans les toilettes)", photos: [] }
     ]
   },
   {
