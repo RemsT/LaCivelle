@@ -96,9 +96,8 @@ const CHECKLIST_DATA = [
     title: "Équipements extérieurs",
     items: [
       { id: "s3i1", text: "Ranger les chaises et la table de jardin", photos: [] },
-      { id: "s3i2", text: "Rentrer ou attacher le parasol", photos: [] },
-      { id: "s3i3", text: "Ranger les jeux et jouets de plage", photos: [] },
-      { id: "s3i4", text: "Rincer et ranger les combinaisons et planches", photos: [] }
+      { id: "s3i2", text: "Mettre la table et le vélo sous la bâche", photos: [] },
+      { id: "s3i3", text: "Ranger les jeux et jouets de plage", photos: [] }
     ]
   },
   {
