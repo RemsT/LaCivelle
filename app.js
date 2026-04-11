@@ -537,6 +537,57 @@ async function deleteEvent() {
 }
 
 // ============================================================
+//  HELPER — RENDU D'UN ITEM CHECKLIST (partagé arrivée + départ)
+// ============================================================
+function buildItemHtml(item, checked, onToggle, wrapPrefix) {
+  const hasDetail = (item.photos && item.photos.length > 0) || item.note;
+
+  const photosHtml = (item.photos && item.photos.length > 0)
+    ? `<div class="item-photos">${
+        item.photos.map(src =>
+          `<img src="${src}" alt="Photo" class="photo-thumb"
+            onclick="event.stopPropagation(); openLightbox('${src}')" loading="lazy">`
+        ).join('')
+      }</div>`
+    : '';
+
+  const noteHtml = item.note
+    ? `<p class="item-note">${item.note}</p>`
+    : '';
+
+  const detailHtml = hasDetail
+    ? `<div class="item-detail hidden" id="detail-${item.id}">${photosHtml}${noteHtml}</div>`
+    : '';
+
+  const expandBtn = hasDetail
+    ? `<button class="item-expand-btn" onclick="toggleItemDetail('${item.id}')" aria-label="Voir détails">▼</button>`
+    : '';
+
+  return `
+    <div class="checklist-item${checked ? ' checked' : ''}" id="${wrapPrefix}-${item.id}">
+      <div class="item-row">
+        <label class="item-label">
+          <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
+            onclick="${onToggle}('${item.id}', this.checked)">
+          <span class="item-text">${item.text}</span>
+        </label>
+        ${expandBtn}
+      </div>
+      ${detailHtml}
+    </div>`;
+}
+
+function toggleItemDetail(itemId) {
+  const detail = document.getElementById('detail-' + itemId);
+  if (!detail) return;
+  const isOpen = !detail.classList.contains('hidden');
+  detail.classList.toggle('hidden', isOpen);
+  // Rotation de la flèche
+  const btn = detail.closest('.checklist-item').querySelector('.item-expand-btn');
+  if (btn) btn.classList.toggle('open', !isOpen);
+}
+
+// ============================================================
 //  ARRIVÉE — CHECKLIST SIMPLE
 // ============================================================
 const ARRIVAL_KEY = 'civelle_arrival_v1';
@@ -565,25 +616,7 @@ function renderArrival() {
   ARRIVAL_DATA.forEach(sec => {
     html += `<h2 class="step-title">${sec.title}</h2>`;
     sec.items.forEach(item => {
-      const checked = !!checkState[item.id];
-      let photosHtml = '';
-      if (item.photos && item.photos.length > 0) {
-        photosHtml = `<div class="item-photos">${
-          item.photos.map(src =>
-            `<img src="${src}" alt="Photo" class="photo-thumb"
-              onclick="event.stopPropagation(); openLightbox('${src}')" loading="lazy">`
-          ).join('')
-        }</div>`;
-      }
-      html += `
-        <div class="checklist-item${checked ? ' checked' : ''}" id="arr-wrap-${item.id}">
-          <label class="item-label">
-            <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
-              onclick="toggleArrivalItem('${item.id}', this.checked)">
-            <span class="item-text">${item.text}</span>
-          </label>
-          ${photosHtml}
-        </div>`;
+      html += buildItemHtml(item, !!checkState[item.id], 'toggleArrivalItem', 'arr-wrap');
     });
   });
   container.innerHTML = html;
@@ -661,25 +694,7 @@ function renderStep(idx) {
 
   let html = `<h2 class="step-title">${sec.title}</h2>`;
   sec.items.forEach(item => {
-    const checked = !!checkState[item.id];
-    let photosHtml = '';
-    if (item.photos && item.photos.length > 0) {
-      photosHtml = `<div class="item-photos">${
-        item.photos.map(src =>
-          `<img src="${src}" alt="Photo" class="photo-thumb"
-            onclick="event.stopPropagation(); openLightbox('${src}')" loading="lazy">`
-        ).join('')
-      }</div>`;
-    }
-    html += `
-      <div class="checklist-item${checked ? ' checked' : ''}" id="item-wrap-${item.id}">
-        <label class="item-label">
-          <input type="checkbox" class="item-checkbox" ${checked ? 'checked' : ''}
-            onclick="toggleItem('${item.id}', this.checked)">
-          <span class="item-text">${item.text}</span>
-        </label>
-        ${photosHtml}
-      </div>`;
+    html += buildItemHtml(item, !!checkState[item.id], 'toggleItem', 'item-wrap');
   });
   container.innerHTML = html;
 

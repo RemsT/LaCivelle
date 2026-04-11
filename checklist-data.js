@@ -1,6 +1,7 @@
 // Données de la liste de check-out
-// Pour ajouter une photo : copier le fichier dans photos/ et ajouter le chemin ici
-// Exemple : photos: ["photos/fenetre-salon.jpg", "photos/fenetre-chambre.jpg"]
+// Pour ajouter une photo : photos: ["photos/mon-image.jpg"]
+// Pour ajouter une note  : note: "Texte explicatif affiché en dépliable"
+// Les items avec photo(s) ou note affichent un bouton ▼ pour déplier le détail
 
 // ---- Checklist d'ARRIVÉE ----
 const ARRIVAL_DATA = [
@@ -55,29 +56,39 @@ const ARRIVAL_DATA = [
 // ---- Checklist de DÉPART ----
 const CHECKLIST_DATA = [
   {
-    id: "sec1",
-    title: "Sécurité et fermeture",
+    id: "sec0",
+    title: "Cuisine et alimentation",
     items: [
-      { id: "s1i1", text: "Fermer et verrouiller toutes les fenêtres", photos: [] },
-      { id: "s1i2", text: "Fermer et verrouiller la porte d'entrée", photos: [] },
-      { id: "s1i3", text: "Vérifier que les volets sont fermés", photos: [] },
-      { id: "s1i4", text: "Éteindre la climatisation", photos: [] },
-      { id: "s1i5", text: "Débrancher tous les appareils électriques", photos: [] },
-      { id: "s1i6", text: "⚠️ Ne pas toucher aux boutons du chauffe-eau", photos: [] }
+      { id: "s0i1", text: "Vider les restes alimentaires périssables", photos: [] },
+      { id: "s0i2", text: "Vider et nettoyer le réfrigérateur", photos: [] },
+      { id: "s0i3", text: "Fermer et ranger huiles, épices et condiments", photos: [] },
+      { id: "s0i4", text: "Vérifier qu'il ne reste pas de nourriture ouverte", photos: [] }
+    ]
+  },
+  {
+    id: "sec1",
+    title: "Nettoyage intérieur",
+    items: [
+      { id: "s1i1", text: "Faire la vaisselle et tout ranger", photos: [] },
+      { id: "s1i2", text: "Nettoyer les plans de travail et l'évier", photos: [] },
+      { id: "s1i3", text: "Nettoyer les plaques de cuisson", photos: [] },
+      { id: "s1i4", text: "Vider et nettoyer le réfrigérateur", photos: [] },
+      { id: "s1i5", text: "Vider les poubelles et sortir les sacs", photos: [] },
+      { id: "s1i6", text: "Passer le balai ou l'aspirateur", photos: [] },
+      { id: "s1i7", text: "Nettoyer la salle de bain et les toilettes", photos: [] },
+      { id: "s1i8", text: "Changer ou laver les draps et serviettes", photos: [] }
     ]
   },
   {
     id: "sec2",
-    title: "Nettoyage intérieur",
+    title: "Sécurité et fermeture",
     items: [
-      { id: "s2i1", text: "Faire la vaisselle et tout ranger", photos: [] },
-      { id: "s2i2", text: "Nettoyer les plans de travail et l'évier", photos: [] },
-      { id: "s2i3", text: "Nettoyer les plaques de cuisson", photos: [] },
-      { id: "s2i4", text: "Vider et nettoyer le réfrigérateur", photos: [] },
-      { id: "s2i5", text: "Vider les poubelles et sortir les sacs", photos: [] },
-      { id: "s2i6", text: "Passer le balai ou l'aspirateur", photos: [] },
-      { id: "s2i7", text: "Nettoyer la salle de bain et les toilettes", photos: [] },
-      { id: "s2i8", text: "Changer ou laver les draps et serviettes", photos: [] }
+      { id: "s2i1", text: "Fermer et verrouiller toutes les fenêtres", photos: [] },
+      { id: "s2i2", text: "Fermer et verrouiller la porte d'entrée", photos: [] },
+      { id: "s2i3", text: "Vérifier que les volets sont fermés", photos: [] },
+      { id: "s2i4", text: "Éteindre la climatisation", photos: [] },
+      { id: "s2i5", text: "Débrancher tous les appareils électriques", photos: [] },
+      { id: "s2i6", text: "⚠️ Ne pas toucher aux boutons du chauffe-eau", photos: [] }
     ]
   },
   {
@@ -92,19 +103,25 @@ const CHECKLIST_DATA = [
   },
   {
     id: "sec4",
-    title: "Gaz",
+    title: "Eau",
     items: [
-      { id: "s4i1", text: "Fermer les 2 bouteilles de gaz et tourner les robinets en position fermée", photos: [] },
-      { id: "s4i2", text: "Verrouiller le coffre à bouteilles (petite clé du trousseau du mobile home)", photos: [] }
+      { id: "s4i1", text: "Vérifier que tous les robinets sont fermés", photos: [] },
+      { id: "s4i2", text: "Couper l'arrivée d'eau générale", photos: [] }
     ]
   },
   {
     id: "sec5",
-    title: "Eau et électricité",
+    title: "Gaz",
     items: [
-      { id: "s5i1", text: "Couper l'arrivée d'eau générale", photos: [] },
-      { id: "s5i2", text: "Vérifier que tous les robinets sont fermés", photos: [] },
-      { id: "s5i3", text: "Couper le disjoncteur général (dans les toilettes)", photos: [] }
+      { id: "s5i1", text: "Fermer les 2 bouteilles de gaz et tourner les robinets en position fermée", photos: [] },
+      { id: "s5i2", text: "Verrouiller le coffre à bouteilles (petite clé du trousseau du mobile home)", photos: [] }
+    ]
+  },
+  {
+    id: "sec6",
+    title: "Électricité",
+    items: [
+      { id: "s6i1", text: "Couper le disjoncteur général (dans les toilettes)", photos: [] }
     ]
   },
 ];
