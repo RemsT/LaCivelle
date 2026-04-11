@@ -56,7 +56,18 @@
 
     <!-- ======= ONGLET ARRIVÉE ======= -->
     <div id="panel-arrival" class="tab-panel" role="tabpanel" aria-labelledby="tab-arrival">
+
+      <div class="progress-header">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="arrival-progress-fill"></div>
+        </div>
+        <div class="progress-meta">
+          <span class="progress-label" id="arrival-progress-label">0 / 0 tâches</span>
+        </div>
+      </div>
+
       <div id="arrival-content" class="arrival-content"></div>
+
       <div class="reset-area">
         <button class="btn-reset" onclick="resetArrival()">🔄 Tout réinitialiser</button>
       </div>

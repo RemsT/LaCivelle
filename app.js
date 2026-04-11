@@ -510,10 +510,12 @@ async function updateEvent() {
     fcEvt.setProp('title', title);
     fcEvt.setProp('backgroundColor', state.selectedColor);
     fcEvt.setProp('borderColor', state.selectedColor);
-    const endDate = new Date(end + 'T00:00:00');
-    endDate.setDate(endDate.getDate() + 1);
+    const [ey, em, ed] = end.split('-').map(Number);
+    const endExclusive = new Date(ey, em - 1, ed + 1);
+    const pad = n => String(n).padStart(2, '0');
+    const endStr = `${endExclusive.getFullYear()}-${pad(endExclusive.getMonth()+1)}-${pad(endExclusive.getDate())}`;
     fcEvt.setStart(start);
-    fcEvt.setEnd(endDate.toISOString().slice(0, 10));
+    fcEvt.setEnd(endStr);
   }
 
   closeDetailModal();
@@ -545,6 +547,17 @@ function loadArrivalState() {
 }
 function saveArrivalState(s) { localStorage.setItem(ARRIVAL_KEY, JSON.stringify(s)); }
 
+function updateArrivalProgressBar() {
+  const checkState = loadArrivalState();
+  const total = ARRIVAL_DATA.reduce((n, s) => n + s.items.length, 0);
+  const done  = Object.keys(checkState).filter(k => checkState[k]).length;
+  const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  const fill  = document.getElementById('arrival-progress-fill');
+  const label = document.getElementById('arrival-progress-label');
+  if (fill)  fill.style.width = pct + '%';
+  if (label) label.textContent = `${done} / ${total} tâches`;
+}
+
 function renderArrival() {
   const checkState = loadArrivalState();
   const container  = document.getElementById('arrival-content');
@@ -574,6 +587,7 @@ function renderArrival() {
     });
   });
   container.innerHTML = html;
+  updateArrivalProgressBar();
 }
 
 function toggleArrivalItem(itemId, checked) {
@@ -582,6 +596,7 @@ function toggleArrivalItem(itemId, checked) {
   saveArrivalState(s);
   const wrap = document.getElementById('arr-wrap-' + itemId);
   if (wrap) wrap.classList.toggle('checked', checked);
+  updateArrivalProgressBar();
 }
 
 function resetArrival() {
