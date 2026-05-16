@@ -15,7 +15,10 @@ const FIREBASE_CONFIG = {
 firebase.initializeApp(FIREBASE_CONFIG);
 // Connexion anonyme immédiate — le PIN est la barrière applicative,
 // l'auth anonyme est uniquement pour satisfaire les règles Firebase.
-firebase.auth().signInAnonymously().catch(e => console.error('Firebase auth:', e));
+// _authReady se résout avec l'utilisateur dès que la connexion anonyme est établie
+const _authReady = firebase.auth().signInAnonymously()
+  .then(cred => cred.user)
+  .catch(e => { console.error('Firebase auth:', e); return null; });
 
 const FIREBASE_URL = 'https://lacivelle-ab6d3-default-rtdb.europe-west1.firebasedatabase.app';
 
@@ -147,16 +150,9 @@ function switchTab(name) {
 //  FIREBASE — AUTH TOKEN
 // ============================================================
 async function getAuthToken() {
-  const user = firebase.auth().currentUser;
-  if (user) return user.getIdToken();
-  // Attendre que la connexion anonyme soit établie
-  return new Promise((resolve, reject) => {
-    const unsub = firebase.auth().onAuthStateChanged(u => {
-      unsub();
-      if (u) u.getIdToken().then(resolve).catch(reject);
-      else reject(new Error('Firebase non authentifié'));
-    });
-  });
+  const user = firebase.auth().currentUser || await _authReady;
+  if (!user) throw new Error('Firebase auth échoué');
+  return user.getIdToken();
 }
 
 // ============================================================
