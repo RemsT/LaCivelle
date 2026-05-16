@@ -212,7 +212,7 @@ async function initCalendar() {
     unselectAuto: false,   // on gère l'unselect manuellement
     longPressDelay: 300,
     selectLongPressDelay: 300,
-    events: events.map(evtToFC),
+    events: events.map(evtToFC).filter(Boolean),
     eventDisplay: 'block',
     displayEventTime: false,
 
@@ -245,6 +245,7 @@ async function initCalendar() {
 // Convertit un event stocké en objet FullCalendar
 // La date de fin stockée est inclusive → on ajoute 1 jour (FullCalendar end est exclusif)
 function evtToFC(evt) {
+  if (!evt || !evt.start || !evt.end) return null;
   const [y, m, d] = evt.end.split('-').map(Number);
   const endExclusive = new Date(y, m - 1, d + 1); // Date locale, pas UTC
   const pad = n => String(n).padStart(2, '0');
