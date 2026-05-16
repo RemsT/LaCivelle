@@ -15,12 +15,9 @@ const FIREBASE_CONFIG = {
 firebase.initializeApp(FIREBASE_CONFIG);
 // Connexion anonyme immédiate — le PIN est la barrière applicative,
 // l'auth anonyme est uniquement pour satisfaire les règles Firebase.
-// _authReady se résout avec l'utilisateur dès que la connexion anonyme est établie
+// _authReady se résout quand la connexion anonyme est établie
 const _authReady = firebase.auth().signInAnonymously()
-  .then(cred => cred.user)
-  .catch(e => { console.error('Firebase auth:', e); return null; });
-
-const FIREBASE_URL = 'https://lacivelle-ab6d3-default-rtdb.europe-west1.firebasedatabase.app';
+  .catch(e => console.error('Firebase auth:', e));
 
 // ============================================================
 //  PROTECTION PAR MOT DE PASSE
@@ -147,25 +144,14 @@ function switchTab(name) {
 }
 
 // ============================================================
-//  FIREBASE — AUTH TOKEN
-// ============================================================
-async function getAuthToken() {
-  const user = firebase.auth().currentUser || await _authReady;
-  if (!user) throw new Error('Firebase auth échoué');
-  return user.getIdToken();
-}
-
-// ============================================================
-//  FIREBASE — LECTURE / ÉCRITURE events
+//  FIREBASE — LECTURE / ÉCRITURE events (via SDK, auth auto)
 // ============================================================
 async function fetchEvents() {
   try {
-    const token = await getAuthToken();
-    const res = await fetch(`${FIREBASE_URL}/events.json?auth=${token}`);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    if (!data) return [];
-    return Object.values(data);
+    await _authReady;
+    const snap = await firebase.database().ref('events').get();
+    if (!snap.exists()) return [];
+    return Object.values(snap.val());
   } catch (e) {
     console.error('fetchEvents:', e);
     return [];
@@ -174,13 +160,8 @@ async function fetchEvents() {
 
 async function saveOneEvent(evt) {
   try {
-    const token = await getAuthToken();
-    const res = await fetch(`${FIREBASE_URL}/events/${evt.id}.json?auth=${token}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(evt),
-    });
-    if (!res.ok) throw new Error(res.status);
+    await _authReady;
+    await firebase.database().ref(`events/${evt.id}`).set(evt);
     return true;
   } catch (e) {
     console.error('saveOneEvent:', e);
@@ -190,9 +171,8 @@ async function saveOneEvent(evt) {
 
 async function deleteOneEvent(id) {
   try {
-    const token = await getAuthToken();
-    const res = await fetch(`${FIREBASE_URL}/events/${id}.json?auth=${token}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error(res.status);
+    await _authReady;
+    await firebase.database().ref(`events/${id}`).remove();
     return true;
   } catch (e) {
     console.error('deleteOneEvent:', e);
